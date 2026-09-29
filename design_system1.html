@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Jhessica · Design System 1</title>
+<meta name="description" content="Design system vivo da Jhessica Confeitaria Artesanal: tokens, tipografia, superfícies, componentes, layout, movimento e ícones, nos modos claro e escuro.">
+<script>
+/* tema antes da primeira pintura: escolha salva > preferência do sistema */
+(function(){var t;try{t=localStorage.getItem('jh-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Hanken+Grotesk:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<!-- mesmo motor do Asagiri: GSAP + ScrollTrigger + Lenis -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<style>
+/* ════════════════════════════════════════════════════════════════
+   0 · TOKENS
+   ════════════════════════════════════════════════════════════════ */
+:root{
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --script:"Pinyon Script","Brush Script MT",cursive;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --pad:clamp(20px,5vw,80px); --max:1360px; --sec-y:clamp(5rem,12vh,9rem); --gutter:clamp(1.25rem,2.5vw,2.5rem);
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px;
+  --r-pill:100px; --r-card:22px; --r-media:14px; --r-sm:8px;
+
+  --ease-out:cubic-bezier(.2,.8,.2,1);      /* Nereo / Clarix: entradas e reveals */
+  --ease-soft:cubic-bezier(.25,.46,.45,.94);/* Nereo: zoom de imagem */
+  --ease-draw:cubic-bezier(.55,0,.1,1);     /* Follow: rabisco à mão */
+  --ease-io:cubic-bezier(.7,0,.2,1);        /* troca de tema, cortinas */
+
+  --grad-cta:linear-gradient(100deg,#EDC690 0%,#D59C5A 48%,#B87A3D 100%);
+  interpolate-size:allow-keywords;
+}
+:root,[data-theme="light"]{
+  --bg:#F7F0E6; --bg-2:#EFE3D3; --surface:#FCF8F2; --surface-2:#F3E9DC;
+  --ink:#2B1D16; --ink-2:#5A463B; --muted:#7A6456;
+  --accent:#B87A3D; --accent-ink:#8F5626; --accent-l:#E2B77E;
+  --rose:#A8475C; --rose-l:#E7A6B2;
+  --line:rgba(43,29,22,.11); --line-2:rgba(43,29,22,.2);
+  --glass:rgba(255,251,246,.52); --glass-strong:rgba(255,251,246,.82); --glass-border:rgba(184,122,61,.26);
+  --glass-shadow:0 24px 48px -26px rgba(66,40,22,.38),inset 0 1px 0 rgba(255,255,255,.65);
+  --field:rgba(255,255,255,.62); --field-f:#fff;
+  --band:#2B1D16; --on-band:#F5EBDD; --on-band-2:rgba(245,235,221,.7); --band-accent:#E2B77E;
+  --scrim:247,240,230; --sugar:184,122,61;
+  --glow-a:rgba(226,183,126,.55); --glow-b:rgba(231,166,178,.34);
+  --grad-foil:linear-gradient(100deg,#7E4A1F 0%,#C0833F 28%,#8F5626 48%,#D39A55 62%,#7E4A1F 100%);
+  --shadow-1:0 1px 2px rgba(43,29,22,.06),0 6px 16px -8px rgba(43,29,22,.16);
+  --shadow-2:0 34px 60px -30px rgba(66,40,22,.42);
+  --shadow-glow:0 18px 40px -16px rgba(184,122,61,.75);
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .11 0 0 0 0 .08 0 0 0 .6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --grain-o:.08;
+  --chev:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A6456' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+[data-theme="dark"]{
+  --bg:#120C09; --bg-2:#1B130F; --surface:#1E1611; --surface-2:#261C16;
+  --ink:#F5EBDD; --ink-2:rgba(245,235,221,.74); --muted:rgba(245,235,221,.56);
+  --accent:#E0AE6E; --accent-ink:#E6B77C; --accent-l:#F0CD9C;
+  --rose:#E7A6B2; --rose-l:#F2C6CE;
+  --line:rgba(224,174,110,.13); --line-2:rgba(224,174,110,.26);
+  --glass:rgba(255,245,235,.045); --glass-strong:rgba(30,22,17,.74); --glass-border:rgba(224,174,110,.18);
+  --glass-shadow:0 24px 48px -22px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);
+  --field:rgba(0,0,0,.26); --field-f:rgba(0,0,0,.4);
+  --band:#1B130F; --on-band:#F5EBDD; --on-band-2:rgba(245,235,221,.7); --band-accent:#E0AE6E;
+  --scrim:18,12,9; --sugar:245,235,221;
+  --glow-a:rgba(224,174,110,.2); --glow-b:rgba(168,71,92,.2);
+  --grad-foil:linear-gradient(100deg,#9A622C 0%,#E9C48F 28%,#B87A3D 48%,#F3D9AE 62%,#A96E34 100%);
+  --shadow-1:0 1px 2px rgba(0,0,0,.4),0 6px 16px -8px rgba(0,0,0,.6);
+  --shadow-2:0 34px 60px -30px rgba(0,0,0,.9);
+  --shadow-glow:0 18px 40px -16px rgba(224,174,110,.45);
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 .94 0 0 0 0 .88 0 0 0 .5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --grain-o:.05;
+  --chev:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E0AE6E' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+[data-theme]{color:var(--ink)}
+
+/* ════════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark}
+body{background:transparent;font-family:var(--sans);font-weight:300;font-size:1rem;line-height:1.7;overflow-x:clip;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--accent);color:var(--bg)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+html.theme-fade *,html.theme-fade *::before,html.theme-fade *::after{transition:background-color .6s,color .6s,border-color .6s,fill .6s!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.i{width:1.2em;height:1.2em;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+
+/* chão fixo da página: cor + dois brilhos + grão (Asagiri .page-bg, Nereo .ambient-glow) */
+.page-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:var(--bg)}
+.page-bg .blob{position:absolute;border-radius:50%;filter:blur(120px);will-change:transform}
+.page-bg .b1{width:46vw;height:46vw;left:-14vw;top:18%;background:var(--glow-a);opacity:.5}
+.page-bg .b2{width:38vw;height:38vw;right:-12vw;bottom:-6%;background:var(--glow-b);opacity:.55}
+.page-bg::after{content:"";position:absolute;inset:0;background-image:var(--grain);opacity:var(--grain-o)}
+
+.container{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.sec{position:relative;padding:var(--sec-y) 0;overflow:hidden}
+.sec.alt{background:color-mix(in srgb,var(--bg-2) 58%,transparent)}
+.sec > .container{position:relative;z-index:1}
+
+/* ════════════════════════════════════════════════════════════════
+   TIPOGRAFIA
+   ════════════════════════════════════════════════════════════════ */
+.display{font-family:var(--serif);font-weight:300;font-size:clamp(3.2rem,8vw,7.4rem);line-height:.95;letter-spacing:-.02em}
+.h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.4rem,4.8vw,4.2rem);line-height:1.02;letter-spacing:-.015em}
+.h3{font-family:var(--serif);font-weight:400;font-size:clamp(1.9rem,3.2vw,2.8rem);line-height:1.08;letter-spacing:-.01em}
+.h4{font-family:var(--serif);font-weight:500;font-size:1.6rem;line-height:1.2}
+.display em,.h2 em,.h3 em,.h4 em,.quote em{font-style:italic;font-weight:400;color:var(--accent)}
+.eyebrow{display:inline-block;font-size:.68rem;font-weight:600;letter-spacing:.32em;text-transform:uppercase;line-height:1.5;color:var(--accent-ink)}
+.label-l{font-size:.76rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;line-height:1.4}
+.label-s{font-size:.6rem;font-weight:600;letter-spacing:.26em;text-transform:uppercase;line-height:1.5;color:var(--muted)}
+.lead{font-size:clamp(1.02rem,1.2vw,1.16rem);line-height:1.75;color:var(--ink-2);max-width:52ch}
+.body-l{font-size:1rem;line-height:1.7;color:var(--ink-2)}
+.body-m{font-size:.88rem;line-height:1.65;color:var(--ink-2)}
+.body-s{font-size:.72rem;line-height:1.6;letter-spacing:.02em;color:var(--muted)}
+.lettering{display:inline-block;font-family:var(--script);font-weight:400;font-size:clamp(2.6rem,5vw,4.4rem);line-height:1.1;color:var(--accent);transform:rotate(-5deg)}
+.quote{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.8rem,3.6vw,3.1rem);line-height:1.2;letter-spacing:-.01em}
+.stat{font-family:var(--serif);font-weight:300;font-size:clamp(2.8rem,6vw,5rem);line-height:1;letter-spacing:-.02em}
+.stat em{font-style:normal;font-size:.45em;color:var(--accent);margin:0 .06em}
+.price{font-family:var(--serif);font-weight:500;font-size:1.55rem;line-height:1.1;white-space:nowrap}
+.price small{font-family:var(--sans);font-size:.6rem;font-weight:600;letter-spacing:.14em;color:var(--muted);margin-right:.3rem;vertical-align:.35em}
+.foil{background:var(--grad-foil);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:foil 7s ease-in-out infinite}
+@keyframes foil{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+/* fundos escuros fixos (interlúdio, processo, faixas) usam sempre o ouro claro */
+.interlude .foil,.process .foil,.band .foil{--grad-foil:linear-gradient(100deg,#9A622C 0%,#E9C48F 28%,#B87A3D 48%,#F3D9AE 62%,#A96E34 100%)}
+.vtext{writing-mode:vertical-rl;font-family:var(--serif);font-style:italic;font-size:1rem;letter-spacing:.34em;color:var(--muted)}
+
+/* título com linha (Nereo) */
+.eyebrow-line{display:flex;align-items:center;gap:1rem}
+.eyebrow-line .ln{width:3rem;height:1px;background:var(--accent);flex:none}
+/* ornamento: filete · brilho · filete (Nereo) */
+.ornament{display:flex;align-items:center;gap:.8rem;width:10rem}
+.ornament i{flex:1;height:1px;background:var(--line-2)}
+.ornament svg{width:11px;height:11px;color:var(--accent);flex:none;animation:twinkle 3.6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{transform:scale(.85) rotate(0)}50%{transform:scale(1.15) rotate(45deg)}}
+/* rabisco à mão revelado por clip-path (Follow .underline-text-piece) */
+.scribble{position:relative;display:inline-block;white-space:nowrap}
+.scribble-line{position:absolute;left:-3%;bottom:-.1em;width:106%;height:.26em;overflow:visible;fill:none;stroke:var(--rose);stroke-width:2.2;stroke-linecap:round;clip-path:inset(0 100% 0 0);transition:clip-path 1s var(--ease-draw)}
+.scribble.is-drawn .scribble-line{clip-path:inset(0 0 0 0)}
+.scribble.snap .scribble-line{transition:none}
+
+/* revelação de letras em 3D com desfoque (Clarix .char-mask / .hero-char) */
+.letters .w{display:inline-block;white-space:nowrap}
+.letters .cm{display:inline-block;overflow:hidden;vertical-align:bottom;padding:.14em .08em .36em;margin:-.14em -.08em -.36em;perspective:500px}
+.letters .ch{display:inline-block;transform:translateY(110%) translateZ(-60px) rotateX(-65deg);transform-origin:bottom center;filter:blur(12px);opacity:0;will-change:transform,filter,opacity;
+  transition:transform 1.4s var(--ease-out),filter 1.2s ease,opacity 1s ease;transition-delay:calc(var(--i,0) * 32ms)}
+.letters.is-in .ch{transform:none;filter:blur(0);opacity:1}
+.letters.fast .ch{transition-duration:.9s,.8s,.6s;transition-delay:calc(var(--i,0) * 18ms)}
+.letters.snap .ch{transition:none}
+
+/* ════════════════════════════════════════════════════════════════
+   LOADER (Asagiri .loader + Nereo shimmer)
+   ════════════════════════════════════════════════════════════════ */
+.loader{position:fixed;inset:0;z-index:120;display:grid;place-items:center;background:var(--bg);clip-path:inset(0 0 0 0);transition:clip-path 1.1s var(--ease-io),opacity 1.1s ease}
+.loader.done{clip-path:inset(0 0 100% 0);opacity:.6;pointer-events:none}
+.lw{text-align:center;transition:transform 1.1s var(--ease-io)}
+.loader.done .lw{transform:translateY(-40px)}
+.lw .mono{width:74px;height:74px;margin:0 auto 1.3rem;color:var(--accent)}
+.lw .mk{font-family:var(--serif);font-weight:500;font-size:1.9rem;letter-spacing:.42em;padding-left:.42em;text-transform:uppercase;line-height:1}
+.lw .lscript{display:block;font-family:var(--script);font-size:1.7rem;color:var(--accent);margin:.3rem 0 1.4rem}
+.lbar{position:relative;width:180px;height:1px;margin:0 auto;background:var(--line-2);overflow:hidden}
+.lbar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent)}
+.lbar::after{content:"";position:absolute;top:0;bottom:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+.lsub{font-size:.6rem;font-weight:500;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);margin-top:1rem}
+.mono .ring{transform-box:fill-box;transform-origin:center;animation:spin 30s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ════════════════════════════════════════════════════════════════
+   NAV (Asagiri nav.docked + Nereo header de vidro)
+   ════════════════════════════════════════════════════════════════ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:80;padding:1.3rem 0;transition:transform .7s var(--ease-out),background-color .5s,box-shadow .5s,padding .5s}
+.nav .container{display:flex;align-items:center;justify-content:space-between;gap:1.5rem}
+.nav.docked{padding:.7rem 0;background:color-mix(in srgb,var(--bg) 70%,transparent);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);box-shadow:0 1px 0 var(--line)}
+.nav.hide{transform:translateY(-105%)}
+.brand{display:flex;align-items:center;gap:.8rem}
+.brand .mono{width:44px;height:44px;color:var(--accent);transition:transform .7s var(--ease-out)}
+.brand:hover .mono{transform:rotate(-14deg) scale(1.06)}
+.brand .wm{display:flex;flex-direction:column;line-height:1}
+.brand .wm b{font-family:var(--serif);font-weight:500;font-size:1.25rem;letter-spacing:.3em;text-transform:uppercase}
+.brand .wm span{font-size:.5rem;font-weight:600;letter-spacing:.36em;text-transform:uppercase;color:var(--accent-ink);margin-top:.4rem}
+.nlinks{display:flex;align-items:center;gap:clamp(1.2rem,2.2vw,2.2rem)}
+.nact{display:flex;align-items:center;gap:.6rem}
+.menu-btn{display:none!important}
+@media(max-width:1060px){.nlinks,.nact .btn{display:none}.menu-btn{display:inline-grid!important}}
+
+/* gaveta mobile (Nereo drawer) */
+.drawer-scrim{position:fixed;inset:0;z-index:85;background:rgba(18,12,9,.35);opacity:0;pointer-events:none;transition:opacity .5s}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:90;width:min(86vw,380px);padding:5.5rem 2rem 2rem;display:flex;flex-direction:column;gap:1.1rem;
+  background:var(--glass-strong);-webkit-backdrop-filter:blur(26px) saturate(1.4);backdrop-filter:blur(26px) saturate(1.4);border-left:1px solid var(--glass-border);
+  transform:translateX(105%);transition:transform .8s var(--ease-out)}
+.drawer a:not(.btn){font-family:var(--serif);font-weight:300;font-size:2rem;line-height:1.2}
+.drawer a:not(.btn):hover{color:var(--accent)}
+.drawer .btn{margin-top:1rem;align-self:flex-start}
+.drawer .icon-btn{position:absolute;top:1.3rem;right:1.4rem}
+body.menu-open .drawer{transform:none}
+body.menu-open .drawer-scrim{opacity:1;pointer-events:auto}
+
+/* ════════════════════════════════════════════════════════════════
+   BOTÕES, LINKS, CHIPS, TAGS
+   ════════════════════════════════════════════════════════════════ */
+.btn{--h:52px;position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.65rem;height:var(--h);padding:0 1.9rem;
+  border-radius:var(--r-pill);border:1px solid transparent;background:none;cursor:pointer;white-space:nowrap;
+  font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;line-height:1;
+  transition:transform .45s var(--ease-out),background-color .35s,color .35s,border-color .35s,box-shadow .45s,filter .35s}
+.btn .i{width:16px;height:16px;transition:transform .45s var(--ease-out)}
+.btn:hover .arrow,.btn.is-hover .arrow{transform:translateX(4px)}
+.btn:active,.btn.is-active{transform:scale(.97);transition-duration:.12s}
+.btn:focus-visible,.btn.is-focus{outline:none;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
+.btn:disabled,.btn.is-disabled{opacity:.42;filter:saturate(.25);pointer-events:none;box-shadow:none}
+/* caramelo em degradê com brilho que atravessa (Nereo CTA dourado + shimmer) */
+.btn-primary{background:var(--grad-cta);color:#2B1D16;box-shadow:var(--shadow-glow),inset 0 1px 0 rgba(255,255,255,.4)}
+.btn-primary::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.6) 50%,transparent 70%);transform:translateX(-120%);transition:transform .9s var(--ease-out)}
+.btn-primary:hover,.btn-primary.is-hover{transform:translateY(-2px);filter:brightness(1.05)}
+.btn-primary:hover::after,.btn-primary.is-hover::after{transform:translateX(120%)}
+.btn-dark{background:var(--ink);color:var(--bg)}
+.btn-dark:hover,.btn-dark.is-hover{background:var(--accent);color:#2B1D16;transform:translateY(-2px)}
+/* vidro fosco (Nereo ghost + Clarix .hi-btn) */
+.btn-glass{background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);border-color:color-mix(in srgb,var(--accent) 50%,transparent);color:var(--ink)}
+.btn-glass:hover,.btn-glass.is-hover{background:var(--accent);border-color:var(--accent);color:#2B1D16}
+.btn-outline{--h:44px;padding:0 1.3rem;font-size:.62rem;border-color:var(--ink);color:var(--ink)}
+.btn-outline:hover,.btn-outline.is-hover{background:var(--ink);color:var(--bg)}
+.btn-sm{--h:40px;padding:0 1.2rem;font-size:.62rem}
+.btn-block{width:100%}
+
+.link-u{position:relative;display:inline-block;font-size:.7rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);transition:color .35s}
+.link-u::after{content:"";position:absolute;left:0;bottom:-5px;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease-out)}
+.link-u:hover,.link-u.is-hover,.link-u.is-current{color:var(--accent-ink)}
+.link-u:hover::after,.link-u.is-hover::after,.link-u.is-current::after{transform:scaleX(1);transform-origin:left}
+
+.icon-btn{width:44px;height:44px;border-radius:50%;display:inline-grid;place-items:center;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);cursor:pointer;
+  transition:color .35s,border-color .35s,background-color .35s,transform .45s var(--ease-out)}
+.icon-btn .i{width:18px;height:18px}
+.icon-btn:hover,.icon-btn.is-hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
+.icon-btn:active,.icon-btn.is-active{transform:scale(.92)}
+.icon-btn.is-focus{outline:2px solid var(--accent);outline-offset:3px}
+.icon-btn.glass{background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-color:var(--glass-border)}
+.theme-btn .i-sun,[data-theme="dark"] .theme-btn .i-moon{display:none}
+[data-theme="dark"] .theme-btn .i-sun{display:block}
+.theme-btn .i{transition:transform .8s var(--ease-out)}
+.theme-btn:hover .i{transform:rotate(-30deg)}
+
+.chip{display:inline-flex;align-items:center;gap:.5rem;height:40px;padding:0 1.15rem;border-radius:var(--r-pill);border:1px solid var(--line-2);background:transparent;cursor:pointer;
+  font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);transition:border-color .35s,color .35s,background-color .35s}
+.chip:hover,.chip.is-hover{border-color:var(--accent);color:var(--accent-ink)}
+.chip[aria-selected="true"],.chip.is-on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent-ink)}
+
+.tag{display:inline-flex;align-items:center;gap:.4rem;padding:.42rem .75rem;border-radius:var(--r-pill);font-size:.56rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;line-height:1;white-space:nowrap}
+.tag .i{width:11px;height:11px}
+.tag-caramel{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent-ink)}
+.tag-rose{background:color-mix(in srgb,var(--rose) 14%,transparent);color:var(--rose)}
+.tag-line{border:1px solid var(--line-2);color:var(--ink-2)}
+.tag-glass{background:var(--glass-strong);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);border:1px solid var(--glass-border)}
+.tag-solid{background:var(--ink);color:var(--bg)}
+
+/* ════════════════════════════════════════════════════════════════
+   VIDRO FOSCO (Nereo .glass-card + Clarix .glass-footer)
+   ════════════════════════════════════════════════════════════════ */
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.glass-card{position:relative;border-radius:var(--r-card);padding:1.5rem}
+.well{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none;border:1px solid var(--glass-border);background:color-mix(in srgb,var(--accent) 8%,transparent);color:var(--accent)}
+.well .i{width:21px;height:21px}
+.stars{display:flex;gap:2px;color:var(--accent)}
+.stars .i{width:13px;height:13px}
+.info{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.info .label-s{color:var(--accent-ink)}
+.feature{display:flex;align-items:flex-start;gap:1rem}
+.feature .h4{font-size:1.35rem;margin:.2rem 0 .3rem}
+.cap{position:absolute;left:14px;bottom:14px;z-index:2;display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .85rem;border-radius:var(--r-pill);
+  font-size:.56rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;line-height:1;color:#FBF4EA;
+  background:rgba(43,29,22,.34);-webkit-backdrop-filter:blur(8px) saturate(1.3);backdrop-filter:blur(8px) saturate(1.3);border:1px solid rgba(255,255,255,.18)}
+
+/* brilho ambiente (Nereo .ambient-glow) */
+.glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-40px,30px,0) scale(1.08)}100%{transform:translate3d(30px,-24px,0) scale(.95)}}
+
+/* inclinação 3D com reflexo (tilt) — use em cards e imagens */
+[data-tilt]{position:relative;transform:perspective(1000px) translate3d(0,var(--lift,0px),0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .9s var(--ease-out),box-shadow .6s,border-color .6s}
+[data-tilt].is-tilting{transition:transform .18s ease-out,box-shadow .6s,border-color .6s}
+.glare{position:absolute;inset:0;z-index:6;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .6s;mix-blend-mode:soft-light;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),rgba(255,255,255,0) 55%)}
+[data-tilt]:hover .glare{opacity:1}
+
+/* ════════════════════════════════════════════════════════════════
+   HERO (estrutura Nereo · parallax Asagiri)
+   ════════════════════════════════════════════════════════════════ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding:clamp(7.5rem,15vh,9.5rem) 0 clamp(5.5rem,11vh,7.5rem)}
+.hero-media{position:absolute;inset:0;z-index:0;overflow:hidden;will-change:transform}
+.hero-media img{position:absolute;left:0;top:-6%;width:100%;height:112%;object-fit:cover;object-position:74% 50%;transition:opacity 1.1s ease}
+.hero-img.night,[data-theme="dark"] .hero-img.day{opacity:0}
+[data-theme="dark"] .hero-img.night{opacity:1}
+.hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:
+  linear-gradient(90deg,rgb(var(--scrim)) 0%,rgb(var(--scrim)) 26%,rgba(var(--scrim),.86) 40%,rgba(var(--scrim),.42) 56%,rgba(var(--scrim),.12) 74%,rgba(var(--scrim),.04) 100%),
+  radial-gradient(circle at 76% 50%,rgba(224,174,110,.08) 0%,rgba(var(--scrim),.12) 44%,rgba(var(--scrim),.58) 100%),
+  linear-gradient(180deg,rgba(var(--scrim),.7) 0%,rgba(var(--scrim),0) 20%,rgba(var(--scrim),0) 74%,rgb(var(--scrim)) 100%)}
+.glows{position:absolute;inset:0;z-index:1;pointer-events:none}
+.glows .g1{width:520px;height:520px;right:6%;top:10%;background:var(--glow-a)}
+.glows .g2{width:420px;height:420px;left:-6%;bottom:0;background:var(--glow-b);animation-duration:23s;animation-delay:-7s}
+#sugar{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
+.hero > .container{position:relative;z-index:3}
+.hero-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter);align-items:center}
+.hero-copy{grid-column:1 / span 7}
+.hero-aside{grid-column:9 / span 4}
+.title-wrap{position:relative;display:inline-block;margin-top:1.8rem}
+.hero-title .hl{display:block}
+.hero-lettering{position:absolute;left:62%;bottom:-.28em;font-size:clamp(2.2rem,4.6vw,4.2rem);transform:rotate(-8deg);white-space:nowrap}
+.hero .ornament{margin-top:2.6rem}
+.hero .lead{margin-top:1.6rem}
+.hero .cta{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2.2rem}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem;max-width:600px;margin-top:2.8rem;padding-top:1.9rem;border-top:1px solid var(--line)}
+.feat{display:flex;align-items:center;gap:.75rem;font-size:.58rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;line-height:1.55;color:var(--ink-2)}
+.feat + .feat{border-left:1px solid var(--line);padding-left:1.1rem}
+.feat .i{width:22px;height:22px;color:var(--accent)}
+.aside-depth{display:flex;flex-direction:column;align-items:flex-end;gap:1.1rem}
+.aside-item{width:100%;max-width:350px}
+.aside-item:nth-child(2){margin-right:2.4rem}
+.float{animation:bob 7s ease-in-out infinite}
+.aside-item:nth-child(2) .float{animation-delay:-2.3s}
+.aside-item:nth-child(3) .float{animation-delay:-4.6s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.photo-card{padding:10px;overflow:hidden}
+.photo-card .ph{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:var(--bg-2)}
+.photo-card .ph img{width:100%;height:100%;object-fit:cover;transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.1);transition:transform .9s var(--ease-out)}
+.photo-card .ph .tag{position:absolute;left:10px;top:10px;z-index:2}
+.photo-card .pc-body{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;padding:.9rem .6rem .45rem}
+.photo-card .h4{font-size:1.3rem;margin-top:.2rem}
+.hero .vtext{position:absolute;right:calc(var(--pad) * .4);top:50%;transform:translateY(-50%);z-index:3}
+.hero-foot{position:absolute;left:0;right:0;bottom:2rem;z-index:3}
+.scrolln{display:inline-flex;align-items:center;gap:.8rem;font-size:.58rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.scrolln .ln{position:relative;width:52px;height:1px;background:var(--line-2);overflow:hidden}
+.scrolln .ln::after{content:"";position:absolute;inset:0;width:40%;background:var(--accent);animation:run 2.4s ease-in-out infinite}
+@keyframes run{0%{transform:translateX(-100%)}100%{transform:translateX(280%)}}
+@media(max-width:1060px){
+  .hero-grid{grid-template-columns:minmax(0,1fr)}
+  .hero-copy,.hero-aside{grid-column:1}
+  .hero-aside{margin-top:1.5rem}
+  .aside-depth{flex-direction:row;flex-wrap:wrap;align-items:stretch;justify-content:flex-start}
+  .aside-item{max-width:none;flex:1 1 280px}
+  .aside-item:nth-child(2){margin-right:0}
+  .hero-scrim{background:linear-gradient(180deg,rgba(var(--scrim),.72) 0%,rgba(var(--scrim),.84) 45%,rgb(var(--scrim)) 100%)}
+  .hero .vtext,.hero-foot{display:none}
+}
+@media(max-width:640px){
+  .feats{grid-template-columns:minmax(0,1fr)}
+  .feat + .feat{border-left:0;padding-left:0}
+  .hero .cta .btn{flex:1 1 100%}
+}
+
+/* faixa rolante (Sable .ann ticker) — grande entre seções e pequena como aviso */
+.marquee{position:relative;overflow:hidden;border-block:1px solid var(--line)}
+.mq-track{display:flex;width:max-content;animation:tick 42s linear infinite}
+.marquee:hover .mq-track{animation-play-state:paused}
+.mq{display:flex;align-items:center;flex:none;white-space:nowrap}
+.mq-big{gap:2.6rem;padding:1.7rem 2.6rem 1.7rem 0;font-family:var(--serif);font-weight:300;font-size:clamp(2rem,4.6vw,3.9rem);line-height:1}
+.mq-big em{font-style:italic;color:var(--accent)}
+.mq-big .i{width:.42em;height:.42em;color:var(--accent)}
+.ann{border:0;border-radius:var(--r-pill);background:var(--band);color:var(--on-band)}
+.ann .mq-track{animation-duration:32s}
+.ann .mq{gap:2rem;padding:.9rem 2rem .9rem 0;font-size:.62rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase}
+.ann .i{width:10px;height:10px;color:var(--band-accent)}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ════════════════════════════════════════════════════════════════
+   CABEÇALHO DE SEÇÃO + CROMO DE DOCUMENTAÇÃO
+   ════════════════════════════════════════════════════════════════ */
+.sec-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:2rem 4rem;margin-bottom:clamp(3rem,6vw,5rem)}
+.sec-head .h2{margin-top:1.2rem;max-width:17ch}
+.sec-intro{max-width:44ch;font-size:.95rem;color:var(--ink-2)}
+.watermark{position:absolute;top:clamp(1.5rem,5vw,4rem);right:var(--pad);z-index:0;font-family:var(--script);font-size:clamp(6rem,17vw,16rem);line-height:1;white-space:nowrap;color:var(--accent);opacity:.09;pointer-events:none;user-select:none}
+.ds-sub{display:flex;align-items:center;gap:1.2rem;margin:clamp(4rem,7vw,6rem) 0 1.8rem}
+.ds-sub::after{content:"";flex:1;height:1px;background:var(--line)}
+.sec-head + .ds-sub{margin-top:0}
+.ds-code{display:block;margin-top:.8rem;font:500 11px/1.65 var(--mono);letter-spacing:0;text-transform:none;color:var(--muted);overflow-wrap:anywhere}
+.ds-panel{position:relative;border:1px solid var(--line);border-radius:var(--r-card);background:color-mix(in srgb,var(--surface) 72%,transparent);padding:clamp(1.25rem,3vw,2.5rem)}
+.ds-row{display:grid;grid-template-columns:170px minmax(0,1fr) 150px;gap:2rem;align-items:center;padding:2rem 0;border-top:1px solid var(--line)}
+.ds-row:first-child{border-top:0;padding-top:.4rem}
+.ds-row:last-child{padding-bottom:.4rem}
+.ds-name small{display:block;margin-top:.35rem;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ds-sample{min-width:0}
+.ds-size{text-align:right;font:500 11px/1.7 var(--mono);color:var(--muted)}
+.ds-size span{opacity:.75}
+.pointer{margin-top:clamp(3.5rem,6vw,5rem);display:flex;align-items:center;gap:.8rem}
+.pointer .i{width:16px;height:16px;color:var(--accent);transform:rotate(90deg)}
+@media(max-width:900px){.ds-row{grid-template-columns:minmax(0,1fr);gap:.8rem}.ds-size{text-align:left}}
+
+/* ════════════════════════════════════════════════════════════════
+   CORES & SUPERFÍCIES
+   ════════════════════════════════════════════════════════════════ */
+.drops{display:flex;flex-wrap:wrap;gap:1.8rem 1.4rem}
+.drop{width:98px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.25rem}
+.drop i{width:84px;height:84px;border-radius:50%;margin-bottom:.6rem;background:var(--c);transition:transform .7s var(--ease-out);
+  box-shadow:inset 0 -12px 18px rgba(0,0,0,.16),inset 0 10px 16px rgba(255,255,255,.3),0 16px 26px -16px rgba(43,29,22,.55)}
+.drop:hover i{transform:translateY(-6px) rotate(-10deg) scale(1.05)}
+.drop b{font-family:var(--serif);font-weight:500;font-size:1.05rem;line-height:1.2}
+.drop code{font:500 10px/1.4 var(--mono);color:var(--muted)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.2rem}
+.sw{border:1px solid var(--line);border-radius:18px;background:var(--surface);overflow:hidden;transition:transform .6s var(--ease-out),box-shadow .6s}
+.sw:hover{transform:translateY(-4px);box-shadow:var(--shadow-2)}
+.sw-chip{height:108px;background:var(--c);box-shadow:inset 0 -1px 0 var(--line)}
+.sw-body{padding:1rem 1.1rem 1.1rem}
+.sw-body b{display:block;font-family:var(--serif);font-weight:500;font-size:1.25rem;line-height:1.2}
+.sw-body .tok{display:block;font:500 11px/1.5 var(--mono);color:var(--accent-ink);margin:.15rem 0 .55rem}
+.sw-body dl{display:grid;grid-template-columns:auto 1fr;gap:.1rem .7rem;font:500 10.5px/1.6 var(--mono);color:var(--muted)}
+.sw-body dd{color:var(--ink-2);text-align:right}
+.sw-body p{font-size:.78rem;line-height:1.5;color:var(--ink-2);margin-top:.6rem}
+.theme-pair{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.theme-card{position:relative;overflow:hidden;border-radius:var(--r-card);padding:clamp(1.6rem,3.5vw,2.8rem);background:var(--bg);border:1px solid var(--line);min-height:320px;display:flex;flex-direction:column;justify-content:flex-end;gap:.9rem}
+.theme-card .glow{width:300px;height:300px}
+.theme-card .row{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.6rem}
+.theme-card > *{position:relative}
+.theme-card > .glow{position:absolute}
+@media(max-width:800px){.theme-pair{grid-template-columns:minmax(0,1fr)}}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.4rem}
+.tiles.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tile-stage{position:relative;overflow:hidden;height:210px;border-radius:var(--r-card);border:1px solid var(--line);display:flex;align-items:flex-end;padding:1.1rem}
+.tile-stage > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile-stage > .glass-card{position:relative;width:100%;padding:1rem 1.1rem}
+.st-alt{background:var(--bg-2)}
+.st-paper{background:transparent;align-items:center;justify-content:center}
+.st-paper .paper{width:78%;height:64%;border-radius:18px;background:var(--surface);box-shadow:var(--shadow-1);border:1px solid var(--line);display:grid;place-items:center}
+.band{position:relative;overflow:hidden;background:var(--band);color:var(--on-band)}
+.band .eyebrow,.band .label-s{color:var(--band-accent)}
+.band .ds-code{color:var(--on-band-2)}
+.band .glow{opacity:.9}
+.band-glow-a{background:rgba(224,174,110,.28)}
+.band-glow-b{background:rgba(168,71,92,.26)}
+.scrim-demo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgb(var(--scrim)) 0%,rgba(var(--scrim),.86) 30%,rgba(var(--scrim),.3) 70%,rgba(var(--scrim),.05) 100%)}
+.shade-demo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(18,12,9,.82))}
+.edge{height:64px;border-radius:12px}
+.shadow-tile{height:120px;border-radius:18px;background:var(--surface);display:flex;align-items:flex-end;padding:1rem}
+.radius-tile{height:96px;background:color-mix(in srgb,var(--accent) 14%,transparent);border:1px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+@media(max-width:1000px){.tiles,.tiles.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.tiles,.tiles.four{grid-template-columns:minmax(0,1fr)}}
+
+/* ════════════════════════════════════════════════════════════════
+   COMPONENTES
+   ════════════════════════════════════════════════════════════════ */
+.states-wrap{overflow:hidden;padding:0}
+.states-scroll{position:relative;z-index:1;overflow-x:auto;padding:clamp(1.25rem,3vw,2.5rem)}
+.states{display:grid;grid-template-columns:150px repeat(5,minmax(0,1fr));gap:1.6rem 1.2rem;align-items:center;min-width:1040px}
+.states .st-name{font:500 11px/1.4 var(--mono);color:var(--accent-ink)}
+.states-wrap .glow{width:340px;height:340px}
+
+.field{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.field > label,.field > .flabel{font-size:.6rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.input{width:100%;height:50px;padding:0 1rem;border-radius:12px;border:1px solid var(--line-2);background-color:var(--field);color:var(--ink);
+  font-size:.92rem;font-weight:400;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .35s,box-shadow .35s,background-color .35s}
+textarea.input{height:auto;padding:.9rem 1rem;resize:none;line-height:1.6}
+select.input{background-image:var(--chev);background-repeat:no-repeat;background-position:right 1rem center;background-size:16px;padding-right:2.7rem;cursor:pointer}
+.input::placeholder{color:var(--muted);opacity:.85}
+.input:hover{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.input:focus,.input.is-focus{border-color:var(--accent);background-color:var(--field-f);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}
+.input.is-error,.input[aria-invalid="true"]{border-color:var(--rose);box-shadow:0 0 0 4px color-mix(in srgb,var(--rose) 13%,transparent)}
+.input:disabled{opacity:.5;cursor:not-allowed}
+.msg{display:flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--rose)}
+.msg .i{width:14px;height:14px}
+.fields-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.4rem;align-items:start}
+.opts{display:flex;flex-wrap:wrap;gap:.5rem}
+.opt{position:relative;display:inline-flex}
+.opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.opt span{display:inline-flex;align-items:center;height:42px;padding:0 1.1rem;border-radius:var(--r-pill);border:1px solid var(--line-2);background:var(--field);font-size:.82rem;font-weight:500;transition:border-color .3s,background-color .3s,color .3s}
+.opt:hover span{border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.opt input:checked + span{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent-ink)}
+.opt input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+.check{position:relative;display:inline-flex;align-items:center;gap:.75rem;font-size:.86rem;color:var(--ink-2);cursor:pointer}
+.check input{position:absolute;left:0;width:22px;height:22px;opacity:0;margin:0;cursor:pointer}
+.check .box{width:22px;height:22px;border-radius:7px;border:1px solid var(--line-2);background:var(--field);display:grid;place-items:center;flex:none;transition:background-color .3s,border-color .3s}
+.check .box .i{width:14px;height:14px;color:var(--bg);opacity:0;transform:scale(.4);transition:opacity .3s,transform .4s var(--ease-out)}
+.check input:checked + .box{background:var(--accent);border-color:var(--accent)}
+.check input:checked + .box .i{opacity:1;transform:none}
+.check input:focus-visible + .box{outline:2px solid var(--accent);outline-offset:2px}
+.signup{display:flex;align-items:center;max-width:460px;padding:5px;border:1px solid var(--line-2);border-radius:var(--r-pill);background:var(--surface);transition:border-color .35s,box-shadow .35s}
+.signup:focus-within,.signup.is-focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent)}
+.signup input{flex:1;min-width:0;border:0;background:transparent;padding:0 1.1rem;font-size:.9rem;color:var(--ink);outline:none}
+.signup input::placeholder{color:var(--muted)}
+.form-split{display:grid;grid-template-columns:1.35fr .9fr;gap:1.6rem;align-items:start}
+.order{border-radius:28px;padding:clamp(1.5rem,4vw,2.8rem);overflow:hidden}
+.order > *{position:relative}
+.order > .glow{position:absolute}
+.order .h3{margin:.7rem 0 1.8rem}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.3rem 1.4rem}
+.form-grid .full{grid-column:1 / -1}
+.stack{display:flex;flex-direction:column;gap:1.6rem}
+.stack .ds-panel{display:flex;flex-direction:column;gap:1rem}
+.tags{display:flex;flex-wrap:wrap;gap:.6rem}
+@media(max-width:1000px){.form-split{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.form-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* card de produto (Asagiri .grade + Sable .card .fav/.add) */
+.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;align-items:stretch}
+.p-card{display:flex;flex-direction:column;border-radius:var(--r-card);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.p-card:hover,.p-card.is-hover{--lift:-6px;--zoom:1.08;box-shadow:var(--shadow-2);border-color:color-mix(in srgb,var(--accent) 42%,transparent)}
+.p-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--bg-2)}
+.p-media img{width:100%;height:100%;object-fit:cover;transform:translate3d(var(--px,0px),var(--py,0px),0) scale(var(--zoom,1.02));transition:transform 1.2s var(--ease-soft)}
+.p-media .tag{position:absolute;left:12px;top:12px;z-index:3}
+.fav{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid var(--glass-border);display:grid;place-items:center;cursor:pointer;
+  background:var(--glass-strong);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--ink);transition:transform .35s var(--ease-out),color .3s}
+.fav .i{width:16px;height:16px;transition:fill .3s}
+.fav:hover{transform:scale(1.1)}
+.fav[aria-pressed="true"]{color:var(--rose)}
+.fav[aria-pressed="true"] .i{fill:currentColor;animation:pop .5s var(--ease-out)}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+.quick{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;height:44px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-size:.6rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+  background:var(--glass-strong);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--glass-border);
+  opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease-out),transform .5s var(--ease-out),background-color .3s}
+.quick .i{width:14px;height:14px}
+.quick:hover{background:var(--accent);color:#2B1D16}
+.p-card:hover .quick,.p-card:focus-within .quick,.p-card.is-hover .quick{opacity:1;transform:none}
+@media(hover:none){.quick{opacity:1;transform:none}}
+.p-body{flex:1;display:flex;flex-direction:column;gap:.45rem;padding:1.4rem 1.5rem 1.5rem}
+.p-body .label-s{color:var(--accent-ink)}
+.p-body p{flex:1}
+.p-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:.8rem;padding-top:1rem;border-top:1px solid var(--line)}
+@media(max-width:1000px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.products{grid-template-columns:minmax(0,1fr)}}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.4rem}
+.trio-wrap{position:relative;padding:clamp(1.5rem,3vw,2.5rem);border-radius:28px;overflow:hidden;border:1px solid var(--line)}
+.trio-wrap > .glow{position:absolute}
+.trio-wrap > .trio{position:relative}
+@media(max-width:900px){.trio{grid-template-columns:minmax(0,1fr)}}
+
+/* cardápio com abas (Nereo menu carte) */
+.carte{position:relative;overflow:hidden;border-radius:32px;padding:clamp(1.5rem,4vw,3.4rem);display:grid;grid-template-columns:1.3fr .8fr;gap:clamp(2rem,4vw,4rem)}
+.carte-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1.4rem;margin-bottom:1.6rem}
+.carte-top .h3{margin-top:.6rem}
+.tabs{display:flex;flex-wrap:wrap;gap:.5rem}
+.m-item{padding:1.15rem 0;border-top:1px solid var(--line)}
+.m-item:first-child{border-top:0}
+.m-top{display:flex;align-items:baseline;gap:.6rem}
+.m-name{font-family:var(--serif);font-weight:500;font-size:1.18rem;letter-spacing:.05em;text-transform:uppercase;line-height:1.25}
+.m-dots{flex:1;min-width:1.5rem;border-bottom:1px dotted var(--line-2);transform:translateY(-.3em)}
+.m-item .price{font-size:1.3rem}
+.m-item p{margin-top:.3rem;max-width:54ch}
+[role="tabpanel"]:not([hidden]) .m-item{animation:rise .7s var(--ease-out) both}
+[role="tabpanel"] .m-item:nth-child(2){animation-delay:.08s}
+[role="tabpanel"] .m-item:nth-child(3){animation-delay:.16s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.carte-feat{position:relative;overflow:hidden;border-radius:22px;min-height:380px;background:var(--bg-2)}
+.carte-feat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.12);transition:opacity .9s var(--ease-out),transform 1.4s var(--ease-out)}
+.carte-feat img.on{opacity:1;transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.04)}
+@media(max-width:900px){.carte{grid-template-columns:minmax(0,1fr)}.carte-feat{min-height:260px;order:-1}}
+
+/* depoimentos (Nereo, troca a cada 5,5 s) + perguntas frequentes */
+.duo{display:grid;grid-template-columns:.9fr 1.1fr;gap:1.6rem;align-items:start}
+.quotes{border-radius:var(--r-card);padding:clamp(1.6rem,3vw,2.6rem);overflow:hidden}
+.qstack{display:grid}
+.qslide{grid-area:1 / 1;opacity:0;transform:translateY(12px);visibility:hidden;transition:opacity .9s var(--ease-out),transform .9s var(--ease-out),visibility .9s}
+.qslide.on{opacity:1;transform:none;visibility:visible}
+.qmark{display:block;height:2.4rem;font-family:var(--serif);font-size:5.5rem;line-height:.8;color:var(--accent);opacity:.55}
+.qslide .quote{font-size:clamp(1.5rem,2.4vw,2rem);margin:.8rem 0 1.3rem}
+.qwho{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.qwho b{font-family:var(--serif);font-weight:500;font-size:1.15rem}
+.qdots{display:flex;gap:.4rem;margin-top:1.6rem}
+.qdots button{width:30px;height:23px;padding:10px 0;border:0;background:var(--line-2);background-clip:content-box;border-radius:3px;cursor:pointer;transition:width .5s var(--ease-out),background-color .4s}
+.qdots button[aria-current="true"]{width:48px;background-color:var(--accent)}
+.faq{border-top:1px solid var(--line)}
+.faq:last-child{border-bottom:1px solid var(--line)}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.3rem 0;list-style:none;cursor:pointer;font-family:var(--serif);font-weight:500;font-size:1.3rem;line-height:1.3;transition:color .3s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--accent-ink)}
+.faq .pm{width:36px;height:36px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;flex:none;transition:transform .6s var(--ease-out),background-color .3s,color .3s,border-color .3s}
+.faq .pm .i{width:16px;height:16px}
+.faq[open] .pm{transform:rotate(45deg);background:var(--accent);border-color:var(--accent);color:#2B1D16}
+.faq .ans{padding:0 3.2rem 1.4rem 0}
+.faq::details-content{block-size:0;overflow:hidden;transition:block-size .6s var(--ease-out),content-visibility .6s allow-discrete}
+.faq[open]::details-content{block-size:auto}
+@media(max-width:900px){.duo{grid-template-columns:minmax(0,1fr)}}
+
+/* ════════════════════════════════════════════════════════════════
+   LAYOUT
+   ════════════════════════════════════════════════════════════════ */
+.spec{border-radius:var(--r-card);padding:.4rem clamp(1.2rem,3vw,2.2rem)}
+.spec-row{display:grid;grid-template-columns:230px minmax(0,1fr);gap:1.5rem;align-items:baseline;padding:1.05rem 0;border-top:1px solid var(--line)}
+.spec-row:first-child{border-top:0}
+.spec-row .ds-code{margin:0}
+@media(max-width:700px){.spec-row{grid-template-columns:minmax(0,1fr);gap:.3rem}}
+.space{display:grid;gap:.75rem}
+.sp{display:grid;grid-template-columns:120px minmax(0,1fr);align-items:center;gap:1rem}
+.sp code{font:500 11px/1.4 var(--mono);color:var(--muted)}
+.sp i{display:block;height:14px;width:var(--s);border-radius:4px;background:var(--grad-cta)}
+.grid12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gutter)}
+.grid12 i{height:110px;border-radius:10px;background:color-mix(in srgb,var(--accent) 11%,transparent);border:1px dashed color-mix(in srgb,var(--accent) 45%,transparent);display:grid;place-items:end center;padding-bottom:.5rem;font:500 10px/1 var(--mono);font-style:normal;color:var(--accent-ink)}
+.grid12 .span7{grid-column:span 7;height:56px}
+.grid12 .span4{grid-column:9 / span 4;height:56px;background:color-mix(in srgb,var(--rose) 12%,transparent);border-color:color-mix(in srgb,var(--rose) 45%,transparent);color:var(--rose)}
+.schema{border-radius:var(--r-card);border:1px solid var(--line);padding:1.2rem;background:var(--surface)}
+.sc-nav{display:flex;align-items:center;gap:.6rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.sc-nav i{width:28px;height:28px;border-radius:50%;border:1px solid var(--accent)}
+.sc-nav b{height:6px;width:46px;border-radius:4px;background:var(--line-2)}
+.sc-nav b:first-of-type{margin-left:auto}
+.sc-nav em{width:70px;height:22px;border-radius:var(--r-pill);background:var(--grad-cta)}
+.sc-body{display:grid;grid-template-columns:7fr 1fr 4fr;gap:1rem;padding:2rem 0 .8rem;align-items:center;background:linear-gradient(90deg,transparent 45%,color-mix(in srgb,var(--accent) 10%,transparent))}
+.sc-copy{display:flex;flex-direction:column;gap:.55rem}
+.sc-copy span{height:8px;border-radius:4px;background:var(--line-2)}
+.sc-copy .big{height:26px;border-radius:6px;background:var(--ink);opacity:.8}
+.sc-copy .acc{background:var(--accent);opacity:1}
+.sc-copy .btns{display:flex;gap:.5rem;margin-top:.5rem}
+.sc-copy .btns i{width:90px;height:26px;border-radius:var(--r-pill);background:var(--grad-cta)}
+.sc-copy .btns i + i{background:transparent;border:1px solid var(--accent)}
+.sc-aside{grid-column:3;display:flex;flex-direction:column;gap:.55rem}
+.sc-aside i{height:34px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-border);box-shadow:var(--shadow-1)}
+.sc-aside .tall{height:90px}
+.split{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,5rem);align-items:center}
+.split.rev{grid-template-columns:.9fr 1.1fr}
+.split.rev .media{order:2}
+.media{position:relative;overflow:hidden;border-radius:var(--r-card);height:clamp(420px,72vh,700px);background:var(--bg-2)}
+.media img{position:absolute;left:0;top:-9%;width:100%;height:118%;object-fit:cover}
+.copy .h3{margin:1.1rem 0 1.2rem}
+.copy p{max-width:44ch;margin-bottom:1rem}
+.meta{display:flex;flex-wrap:wrap;gap:2.4rem;margin-top:2rem}
+.meta .k{font-family:var(--serif);font-weight:400;font-size:2.2rem;line-height:1;color:var(--accent)}
+.meta .l{margin-top:.45rem;font-size:.6rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+@media(max-width:900px){.split,.split.rev{grid-template-columns:minmax(0,1fr)}.split.rev .media{order:0}.media{height:52vh}}
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(170px,18vw,260px);gap:1rem;perspective:1400px}
+.bento .b1{grid-column:span 2;grid-row:span 2}
+.bento .b4{grid-column:span 2}
+.b-tile{position:relative;overflow:hidden;border-radius:var(--r-media);background:var(--bg-2)}
+.b-tile img{width:100%;height:100%;object-fit:cover;transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.06);transition:transform 1.2s var(--ease-soft)}
+.b-tile:hover img{transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.12)}
+@media(max-width:800px){.bento{grid-template-columns:repeat(2,minmax(0,1fr))}.bento .b1{grid-column:span 2}}
+.numgrid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem;text-align:center}
+.numgrid > div + div{border-left:1px solid rgba(245,235,221,.12)}
+.numgrid .stat{color:var(--on-band)}
+.numgrid .stat em{color:var(--band-accent)}
+.numgrid .l{margin-top:.9rem;font-size:.6rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--on-band-2)}
+@media(max-width:800px){.numgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:2.8rem 1.2rem}.numgrid > div:nth-child(3){border-left:0}}
+/* interlúdio: cortina que abre de card para tela cheia (Clarix curtain + Asagiri interlude) */
+.interlude{position:relative;min-height:94vh;display:grid;place-items:center;text-align:center;color:#F5EBDD;overflow:hidden}
+.interlude .frame{position:absolute;inset:0;overflow:hidden;background:#1B130F}
+.interlude .frame img{position:absolute;left:0;top:-9%;width:100%;height:118%;object-fit:cover}
+.interlude .frame::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(18,12,9,.5),rgba(18,12,9,.78))}
+.interlude .q{position:relative;z-index:1;padding:0 var(--pad)}
+.interlude blockquote{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(2.2rem,5.4vw,4.6rem);line-height:1.12;max-width:20ch;margin:.8rem auto 0}
+.interlude .lettering{font-size:clamp(2.4rem,4.4vw,3.6rem)}
+
+/* ════════════════════════════════════════════════════════════════
+   MOVIMENTO
+   ════════════════════════════════════════════════════════════════ */
+.eases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.2rem}
+.ease{border:1px solid var(--line);border-radius:18px;padding:1.2rem;background:var(--surface)}
+.ease svg{width:100%;height:auto;aspect-ratio:1;overflow:visible;margin:.6rem 0 1rem}
+.ease .axis{stroke:var(--line-2);stroke-width:1;fill:none}
+.ease .curve{stroke:var(--accent);stroke-width:2;fill:none;vector-effect:non-scaling-stroke}
+.ease .track{position:relative;height:18px;border-radius:var(--r-pill);background:var(--bg-2)}
+.ease .track i{position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:var(--rose);animation:slide 2.6s var(--e) infinite alternate}
+@keyframes slide{to{left:calc(100% - 15px)}}
+@media(max-width:900px){.eases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.demos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.4rem}
+.demo{display:flex;flex-direction:column;border-radius:var(--r-card);border:1px solid var(--line);background:var(--surface);overflow:hidden}
+.demo-stage{position:relative;height:230px;display:grid;place-items:center;overflow:hidden;background:var(--bg-2);padding:1.4rem}
+.demo-body{flex:1;display:flex;flex-direction:column;gap:.35rem;padding:1.3rem 1.4rem 1.4rem}
+.demo-body .label-s{color:var(--accent-ink)}
+.demo-body .h4{font-size:1.35rem}
+.demo-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:1rem;border-top:1px solid var(--line)}
+.demo-row code{font:500 11px/1 var(--mono);color:var(--muted)}
+.demo .lw .mono{width:48px;height:48px;margin-bottom:.8rem}
+.demo .lw .mk{font-size:1.2rem}
+.demo .lw .lscript{font-size:1.2rem;margin:.1rem 0 .9rem}
+.clip-box{width:100%;height:100%;border-radius:14px;overflow:hidden}
+.clip-box img{width:100%;height:100%;object-fit:cover}
+.tilt-demo{width:72%;height:84%;border-radius:18px;overflow:hidden;box-shadow:var(--shadow-2)}
+.tilt-demo img{width:100%;height:100%;object-fit:cover;transform:translate3d(var(--px,0px),var(--py,0px),0) scale(1.12);transition:transform .9s var(--ease-out)}
+@media(max-width:1000px){.demos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.demos{grid-template-columns:minmax(0,1fr)}}
+/* processo fixado com rolagem horizontal (Asagiri .ritual) */
+.process{position:relative;height:100vh;display:flex;flex-direction:column;overflow:hidden;background:var(--band);color:var(--on-band)}
+.process-head{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem 2rem;padding-top:clamp(4.5rem,9vh,6rem);padding-bottom:clamp(1rem,2.5vh,1.8rem)}
+.process-head .h2{margin-top:.8rem;max-width:none}
+.process-head .h2 em{color:var(--band-accent)}
+.track-wrap{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden}
+.track{display:flex;gap:clamp(1.25rem,2.5vw,2.5rem);width:max-content;height:100%;padding:0 var(--pad) clamp(2.6rem,5vh,3.6rem);will-change:transform}
+.step{position:relative;flex:0 0 auto;width:min(74vw,400px);height:100%;border-radius:var(--r-card);overflow:hidden;background:#2A1D16}
+.step img{position:absolute;top:0;left:-10%;width:120%;height:100%;object-fit:cover}
+.step .lab{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:1.8rem;background:linear-gradient(180deg,transparent 40%,rgba(18,12,9,.88))}
+.step .s{font-family:var(--script);font-size:1.8rem;line-height:1;color:var(--band-accent)}
+.step .s b{font-family:var(--serif);font-weight:500;font-size:.85rem;letter-spacing:.2em;margin-right:.6rem;vertical-align:.3em}
+.step h3{font-family:var(--serif);font-weight:400;font-size:1.85rem;line-height:1.1;color:#F5EBDD;margin:.5rem 0 .4rem}
+.step p{font-size:.86rem;color:rgba(245,235,221,.8);max-width:30ch}
+.step.intro{width:min(80vw,400px);background:none;display:flex;flex-direction:column;justify-content:center;gap:1.4rem}
+.step.intro .big{font-family:var(--serif);font-weight:300;font-size:clamp(2.1rem,4vw,3.2rem);line-height:1.08}
+.step.intro em{color:var(--band-accent)}
+.process-bar{position:absolute;left:var(--pad);right:var(--pad);bottom:1.3rem;z-index:1;height:1px;background:rgba(245,235,221,.14)}
+.process-bar i{position:absolute;inset:0;background:var(--band-accent);transform:scaleX(0);transform-origin:left}
+
+/* ════════════════════════════════════════════════════════════════
+   ÍCONES, CTA, RODAPÉ
+   ════════════════════════════════════════════════════════════════ */
+.icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));overflow:hidden;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-card)}
+.ic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1.6rem .5rem;box-shadow:1px 0 0 var(--line),0 1px 0 var(--line);transition:background-color .35s,color .35s}
+.ic .i{width:26px;height:26px;transition:transform .5s var(--ease-out)}
+.ic code{font:500 10px/1.3 var(--mono);color:var(--muted)}
+.ic:hover{background:var(--surface);color:var(--accent)}
+.ic:hover .i{transform:translateY(-3px) scale(1.1)}
+.ic-row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:2.2rem}
+.ic-row figure{display:flex;flex-direction:column;align-items:center;gap:.7rem}
+.ic-row figcaption{font:500 10px/1.3 var(--mono);color:var(--muted)}
+.cta-sec{text-align:center}
+.cta-sec .h2{max-width:none;margin:1.2rem auto 1.2rem}
+.cta-sec .lead{margin:0 auto 2.4rem}
+.cta-sec .signup{margin:0 auto}
+.cta-sec .body-s{margin-top:1.2rem}
+.footer{position:relative;overflow:hidden;background:var(--band);color:var(--on-band);padding:clamp(4rem,9vh,7rem) 0 2.4rem}
+.frow{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:2.5rem}
+.fbrand .brand .mono{color:var(--band-accent)}
+.fbrand .brand .wm span{color:var(--band-accent)}
+.fbrand .lettering{font-size:2.3rem;color:var(--band-accent);margin-top:1rem}
+.fsocial{display:flex;gap:.6rem;margin-top:1.4rem}
+.footer .icon-btn{color:var(--on-band-2);border-color:rgba(245,235,221,.2)}
+.footer .icon-btn:hover{color:var(--band-accent);border-color:var(--band-accent)}
+.fcols{display:flex;flex-wrap:wrap;gap:clamp(2rem,5vw,4.5rem)}
+.fcol h4{font-size:.6rem;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--band-accent);margin-bottom:1.1rem}
+.fcol a{display:block;font-size:.88rem;color:var(--on-band-2);margin-bottom:.6rem;transition:color .3s,transform .4s var(--ease-out)}
+.fcol a:hover{color:var(--on-band);transform:translateX(4px)}
+.fbot{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;margin-top:3.5rem;padding-top:1.6rem;border-top:1px solid rgba(245,235,221,.12);font-size:.68rem;letter-spacing:.04em;color:var(--on-band-2)}
+
+/* ════════════════════════════════════════════════════════════════
+   MOVIMENTO REDUZIDO — tudo visível e estático
+   ════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .letters .ch{transform:none;filter:none;opacity:1}
+  .scribble-line{clip-path:none}
+  #sugar{display:none}
+  .process{height:auto;display:block}
+  .track-wrap{height:auto;overflow:visible}
+  .track{width:auto;flex-direction:column;height:auto;padding:1rem var(--pad) 4rem}
+  .step,.step.intro{width:100%;height:auto;min-height:56vh}
+  .step.intro{min-height:auto;padding:2rem 0}
+  .process-bar{display:none}
+}
+</style>
+<noscript><style>.loader{display:none}</style></noscript>
+</head>
+<body>
+
+<!-- ═════════ SPRITE DE ÍCONES · traço 1,5 · 24×24 · herdam currentColor ═════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <symbol id="i-cake" viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></symbol>
+  <symbol id="i-slice" viewBox="0 0 24 24"><circle cx="9" cy="7" r="2"/><path d="M7.2 7.9 3 11v9c0 .6.4 1 1 1h16c.6 0 1-.4 1-1v-9c0-2-3-6-7-8l-3.6 2.6"/><path d="M16 13H3"/><path d="M16 17H3"/></symbol>
+  <symbol id="i-cupcake" viewBox="0 0 24 24"><path d="M5.5 12h13l-1.5 8.2a1 1 0 0 1-1 .8H8a1 1 0 0 1-1-.8z"/><path d="M10 12l.5 9M14 12l-.5 9"/><path d="M5.5 12a3 3 0 0 1 .8-5.6A4.6 4.6 0 0 1 12 3.5a4.6 4.6 0 0 1 5.7 2.9 3 3 0 0 1 .8 5.6"/><circle cx="12" cy="2.2" r=".9"/></symbol>
+  <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></symbol>
+  <symbol id="i-whisk" viewBox="0 0 24 24"><path d="M12 14v8"/><path d="M12 14c-3.2 0-5.4-3.9-5.4-7.3a5.4 5.4 0 0 1 10.8 0c0 3.4-2.2 7.3-5.4 7.3z"/><path d="M12 14c-1.3 0-2.3-3.7-2.3-7.3S10.7 1.3 12 1.3s2.3 1.8 2.3 5.4-1 7.3-2.3 7.3z"/></symbol>
+  <symbol id="i-chef" viewBox="0 0 24 24"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></symbol>
+  <symbol id="i-egg" viewBox="0 0 24 24"><path d="M12 22c6.23-.05 7.87-5.57 7.5-10-.36-4.34-3.95-9.96-7.5-10-3.55.04-7.14 5.66-7.5 10-.37 4.43 1.27 9.95 7.5 10z"/></symbol>
+  <symbol id="i-wheat" viewBox="0 0 24 24"><path d="M2 22 16 8"/><path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z"/><path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z"/><path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z"/><path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z"/><path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z"/><path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z"/><path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.6l2.85 6.02 6.6.78-4.88 4.53 1.3 6.52L12 17.2l-5.87 3.25 1.3-6.52L2.55 9.4l6.6-.78z"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 1c.8 6.5 4.5 10.2 11 11-6.5.8-10.2 4.5-11 11-.8-6.5-4.5-10.2-11-11 6.5-.8 10.2-4.5 11-11z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-insta" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+</defs></svg>
+
+<div class="page-bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<!-- loader: “no forno · %” conta as imagens marcadas com data-preload -->
+<div class="loader" id="loader" role="status" aria-label="Carregando">
+  <div class="lw">
+    <svg class="mono" viewBox="0 0 80 80" fill="none" aria-hidden="true"><circle class="ring" cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 4.5" stroke-linecap="round"/><circle cx="40" cy="40" r="29.5" stroke="currentColor" stroke-width="1.2"/><text x="40.5" y="52.5" text-anchor="middle" fill="currentColor" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="500" font-size="38">J</text></svg>
+    <div class="mk">Jhessica</div>
+    <span class="lscript">confeitaria artesanal</span>
+    <div class="lbar"><i id="lbar"></i></div>
+    <div class="lsub" id="lsub">no forno · 0%</div>
+  </div>
+</div>
+
+<!-- nav -->
+<nav class="nav" id="nav" aria-label="Seções do design system">
+  <div class="container">
+    <a class="brand" href="#top" aria-label="Jhessica, voltar ao topo">
+      <svg class="mono" viewBox="0 0 80 80" fill="none" aria-hidden="true"><circle class="ring" cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 4.5" stroke-linecap="round"/><circle cx="40" cy="40" r="29.5" stroke="currentColor" stroke-width="1.2"/><text x="40.5" y="52.5" text-anchor="middle" fill="currentColor" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="500" font-size="38">J</text></svg>
+      <span class="wm"><b>Jhessica</b><span>Confeitaria artesanal</span></span>
+    </a>
+    <div class="nlinks">
+      <a class="link-u" href="#tipografia">Tipografia</a>
+      <a class="link-u" href="#cores">Cores</a>
+      <a class="link-u" href="#componentes">Componentes</a>
+      <a class="link-u" href="#layout">Layout</a>
+      <a class="link-u" href="#movimento">Movimento</a>
+      <a class="link-u" href="#icones">Ícones</a>
+    </div>
+    <div class="nact">
+      <button class="icon-btn glass theme-btn" id="themeBtn" type="button" aria-label="Ativar modo escuro" aria-pressed="false"><svg class="i i-moon"><use href="#i-moon"/></svg><svg class="i i-sun"><use href="#i-sun"/></svg></button>
+      <a class="btn btn-primary btn-sm" href="#componentes">Encomendar</a>
+      <button class="icon-btn glass menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="drawer"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</nav>
+<div class="drawer-scrim" id="drawerScrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menu">
+  <button class="icon-btn" id="drawerClose" type="button" aria-label="Fechar menu"><svg class="i"><use href="#i-x"/></svg></button>
+  <a href="#tipografia">Tipografia</a><a href="#cores">Cores</a><a href="#componentes">Componentes</a><a href="#layout">Layout</a><a href="#movimento">Movimento</a><a href="#icones">Ícones</a>
+  <a class="btn btn-primary" href="#componentes">Encomendar</a>
+</aside>
+
+<main>
+<!-- ═════════════════ 0 · HERO ═════════════════ -->
+<header class="hero" id="top">
+  <div class="hero-media" aria-hidden="true">
+    <img class="hero-img day" src="assets/images/hero-dia.webp" alt="" data-preload fetchpriority="high">
+    <img class="hero-img night" src="assets/images/hero-noite.webp" alt="" data-preload>
+  </div>
+  <div class="hero-scrim"></div>
+  <div class="glows" data-depth="1" aria-hidden="true"><div class="glow g1"></div><div class="glow g2"></div></div>
+  <canvas id="sugar" aria-hidden="true"></canvas>
+  <div class="vtext" aria-hidden="true">açúcar · manteiga · afeto</div>
+
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow-line"><span class="ln"></span><span class="eyebrow">Confeitaria artesanal · Design System 01</span></div>
+      <div class="title-wrap">
+        <h1 class="display hero-title" data-split><span class="hl">Doçura com</span><span class="hl"><em class="scribble">método.<svg class="scribble-line" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M3 9.5C45 4 120 1.8 197 6.5"/><path vector-effect="non-scaling-stroke" d="M30 12.5c45-3.2 100-3.4 150-.8"/></svg></em></span></h1>
+        <span class="lettering foil hero-lettering" data-depth=".6">feito à mão</span>
+      </div>
+      <div class="ornament" aria-hidden="true"><i></i><svg class="i"><use href="#i-sparkle"/></svg><i></i></div>
+      <p class="lead">A receita visual da Jhessica Confeitaria: cores, letras, superfícies e movimentos medidos como ingredientes, para que cada página saia do forno com o mesmo sabor.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#cores">Explorar tokens<svg class="i arrow"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-glass" href="#componentes"><svg class="i"><use href="#i-cake"/></svg>Componentes</a>
+      </div>
+      <div class="feats">
+        <div class="feat"><svg class="i"><use href="#i-sparkle"/></svg><span>Tokens claro<br>e escuro</span></div>
+        <div class="feat"><svg class="i"><use href="#i-whisk"/></svg><span>Movimento<br>sem pressa</span></div>
+        <div class="feat"><svg class="i"><use href="#i-cake"/></svg><span>Componentes<br>prontos</span></div>
+      </div>
+    </div>
+
+    <div class="hero-aside">
+      <div class="aside-depth" data-depth=".45">
+        <div class="aside-item"><div class="float">
+          <article class="glass glass-card photo-card" data-tilt="9">
+            <div class="ph"><img src="assets/images/produto-bolo-frutas.webp" alt="Fatia de naked cake com frutas vermelhas num prato de cerâmica" data-preload><span class="tag tag-glass"><svg class="i"><use href="#i-heart"/></svg>Mais pedido</span></div>
+            <div class="pc-body"><div><span class="label-s">Amostra · .glass-card</span><h2 class="h4">Naked de frutas vermelhas</h2></div><span class="price"><small>R$</small>189</span></div>
+          </article>
+        </div></div>
+        <div class="aside-item"><div class="float">
+          <div class="glass glass-card info" data-tilt="10">
+            <div><span class="label-s">Paleta</span><h2 class="h3">12 tokens</h2><div class="stars" aria-label="Cinco estrelas"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div><p class="body-s" style="margin-top:.4rem">Claro &amp; escuro em :root</p></div>
+            <span class="well"><svg class="i"><use href="#i-sparkle"/></svg></span>
+          </div>
+        </div></div>
+        <div class="aside-item"><div class="float">
+          <div class="glass glass-card feature" data-tilt="10">
+            <span class="well"><svg class="i"><use href="#i-whisk"/></svg></span>
+            <div><span class="label-s" style="color:var(--accent-ink)">Superfície assinatura</span><h2 class="h4">Vidro fosco</h2><p class="body-m">Blur de 16px sobre creme a 52%, filete caramelo e uma sombra funda.</p></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-foot"><div class="container"><span class="scrolln"><span class="ln"></span>Role para provar</span></div></div>
+</header>
+
+<!-- faixa rolante grande (Sable ticker) · acelera com a velocidade da rolagem -->
+<div class="marquee" aria-label="Categorias">
+  <div class="mq-track">
+    <div class="mq mq-big"><span>Bolos <em>de festa</em></span><svg class="i"><use href="#i-sparkle"/></svg><span>Doces <em>finos</em></span><svg class="i"><use href="#i-sparkle"/></svg><span>Tortas</span><svg class="i"><use href="#i-sparkle"/></svg><span>Bem-casados</span><svg class="i"><use href="#i-sparkle"/></svg><span><em>Sob</em> encomenda</span><svg class="i"><use href="#i-sparkle"/></svg></div>
+    <div class="mq mq-big" aria-hidden="true"><span>Bolos <em>de festa</em></span><svg class="i"><use href="#i-sparkle"/></svg><span>Doces <em>finos</em></span><svg class="i"><use href="#i-sparkle"/></svg><span>Tortas</span><svg class="i"><use href="#i-sparkle"/></svg><span>Bem-casados</span><svg class="i"><use href="#i-sparkle"/></svg><span><em>Sob</em> encomenda</span><svg class="i"><use href="#i-sparkle"/></svg></div>
+  </div>
+</div>
+
+<!-- ═════════════════ 1 · TIPOGRAFIA ═════════════════ -->
+<section class="sec" id="tipografia">
+  <span class="watermark" data-speed="-.6" aria-hidden="true">letras</span>
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">01 · Tipografia</span></div>
+        <h2 class="h2 fast" data-split>Três vozes, <em>um só sabor.</em></h2>
+      </div>
+      <p class="sec-intro" data-rv>Cormorant Garamond leve conduz os títulos e usa o itálico caramelo como ênfase. Hanken Grotesk a 300 carrega o texto e, a 600 em caixa alta espaçada, os rótulos. Pinyon Script aparece só em pequenos gestos de lettering, como uma assinatura.</p>
+    </div>
+
+    <div class="tiles" data-rv="stagger">
+      <div class="glass glass-card"><span class="label-s" style="color:var(--accent-ink)">Display · Títulos</span><p class="h3" style="margin:.8rem 0 .4rem">Cormorant <em>Garamond</em></p><p class="body-m">300 · 400 · 500 · <em>itálico</em>. Títulos, números, preços e a marca.</p><code class="ds-code">--serif · .display .h2 .h3 .h4 .quote .stat .price</code></div>
+      <div class="glass glass-card"><span class="label-s" style="color:var(--accent-ink)">Texto · Rótulos · Botões</span><p class="h3" style="margin:.8rem 0 .4rem;font-family:var(--sans);font-weight:300">Hanken Grotesk</p><p class="body-m">300 no corpo, 500 nos links, 600 nos rótulos. Entrelinha 1,7.</p><code class="ds-code">--sans · body .eyebrow .label-* .lead .body-*</code></div>
+      <div class="glass glass-card"><span class="label-s" style="color:var(--accent-ink)">Lettering · Assinatura</span><p class="lettering foil" style="margin:.5rem 0 0;font-size:2.8rem">Pinyon Script</p><p class="body-m">Só em pequenas doses: loader, hero, passos e rodapé.</p><code class="ds-code">--script · .lettering (+ .foil)</code></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">1.1 · Escala</span></div>
+    <div class="ds-panel" data-rv>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Heading 1</span><small>Display do hero</small></div><div class="ds-sample"><p class="display" data-m>Doçura com <em>método.</em></p><code class="ds-code">.display · 300 · clamp(3.2rem, 8vw, 7.4rem) · lh .95 · ls −.02em · em → itálico var(--accent)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Heading 2</span><small>Título de seção</small></div><div class="ds-sample"><p class="h2" data-m>Três vozes, <em>um só sabor.</em></p><code class="ds-code">.h2 · 300 · clamp(2.4rem, 4.8vw, 4.2rem) · lh 1.02</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Heading 3</span><small>Título dividido</small></div><div class="ds-sample"><p class="h3" data-m>Poucos ingredientes, <em>escolhidos um a um.</em></p><code class="ds-code">.h3 · 400 · clamp(1.9rem, 3.2vw, 2.8rem) · lh 1.08</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Heading 4</span><small>Título de card</small></div><div class="ds-sample"><p class="h4" data-m>Naked de frutas vermelhas</p><code class="ds-code">.h4 · 500 · 1.6rem · lh 1.2</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Bold L</span><small>Botão · rótulo grande</small></div><div class="ds-sample"><p class="label-l" data-m>Enviar pedido pelo WhatsApp</p><code class="ds-code">.label-l · 600 · .76rem · ls .18em · caixa alta · .btn usa .7rem</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Bold M</span><small>Eyebrow</small></div><div class="ds-sample"><p class="eyebrow" data-m>02 · Cores &amp; superfícies</p><code class="ds-code">.eyebrow · 600 · .68rem · ls .32em · var(--accent-ink) (contraste AA)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Bold S</span><small>Microrrótulo</small></div><div class="ds-sample"><p class="label-s" data-m>Data de entrega</p><code class="ds-code">.label-s · 600 · .6rem · ls .26em · var(--muted)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Paragraph</span><small>Lead</small></div><div class="ds-sample"><p class="lead" data-m>Cada bolo começa numa conversa: a ocasião, o sabor preferido, quem vai apagar as velinhas. O resto a gente resolve no forno.</p><code class="ds-code">.lead · 300 · clamp(1.02rem, 1.2vw, 1.16rem) · lh 1.75 · máx. 52ch · var(--ink-2)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Regular L</span><small>Texto corrido</small></div><div class="ds-sample"><p class="body-l" data-m>Usamos manteiga de verdade, ovos caipiras e chocolate belga. Nada de conservantes, nada de pressa.</p><code class="ds-code">.body-l · 300 · 1rem · lh 1.7</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Regular M</span><small>Texto de card</small></div><div class="ds-sample"><p class="body-m" data-m>Pão de ló de baunilha, creme de mascarpone e frutas vermelhas frescas por cima.</p><code class="ds-code">.body-m · 300 · .88rem · lh 1.65</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Regular S</span><small>Letra miúda</small></div><div class="ds-sample"><p class="body-s" data-m>Encomendas com 48 h de antecedência · retirada no ateliê com horário marcado</p><code class="ds-code">.body-s · .72rem · lh 1.6 · ls .02em · var(--muted)</code></div><div class="ds-size">—</div></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">1.2 · Estilos complementares</span></div>
+    <div class="ds-panel" data-rv>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Lettering</span><small>Assinatura</small></div><div class="ds-sample"><p class="lettering" data-m>com carinho</p><code class="ds-code">.lettering · Pinyon Script · clamp(2.6rem, 5vw, 4.4rem) · rotate(−5deg) · var(--accent)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Folha de ouro</span><small>Degradê em texto</small></div><div class="ds-sample"><p class="lettering foil" data-m>feito à mão</p><code class="ds-code">.foil · background var(--grad-foil) 240% · background-clip text · @keyframes foil 7s</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Citação</span><small>Depoimentos</small></div><div class="ds-sample"><p class="quote" data-m>“Todo mundo pediu <em>o contato.</em>”</p><code class="ds-code">.quote · 300 itálico · clamp(1.8rem, 3.6vw, 3.1rem) · lh 1.2</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Número</span><small>Faixa de números</small></div><div class="ds-sample"><p class="stat" data-m>48<em>h</em></p><code class="ds-code">.stat · 300 · clamp(2.8rem, 6vw, 5rem) · lh 1 · em → reto, .45em, var(--accent)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Preço</span><small>Cards e cardápio</small></div><div class="ds-sample"><p class="price" data-m><small>R$</small>189</p><code class="ds-code">.price · 500 · 1.55rem · small → sans .6rem 600 var(--muted)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Rabisco</span><small>Ênfase à mão</small></div><div class="ds-sample"><p class="h3" data-m>Receita de <span class="scribble">família<svg class="scribble-line" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M3 9.5C45 4 120 1.8 197 6.5"/><path vector-effect="non-scaling-stroke" d="M30 12.5c45-3.2 100-3.4 150-.8"/></svg></span></p><code class="ds-code">.scribble + svg.scribble-line · traço var(--rose) · clip-path inset(0 100% 0 0) → 0 · 1s var(--ease-draw)</code></div><div class="ds-size">—</div></div>
+      <div class="ds-row"><div class="ds-name"><span class="eyebrow">Vertical</span><small>Fita lateral do hero</small></div><div class="ds-sample"><p class="vtext" data-m style="height:12rem">açúcar · manteiga · afeto</p><code class="ds-code">.vtext · writing-mode vertical-rl · itálico 1rem · ls .34em · var(--muted)</code></div><div class="ds-size">—</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════ 2 · CORES & SUPERFÍCIES ═════════════════ -->
+<section class="sec alt" id="cores">
+  <span class="watermark" data-speed="-.6" aria-hidden="true">paleta</span>
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">02 · Cores &amp; superfícies</span></div>
+        <h2 class="h2 fast" data-split>Chantilly de dia, <em>ganache à noite.</em></h2>
+      </div>
+      <p class="sec-intro" data-rv>Dez cores com nome de ingrediente formam a despensa. Doze tokens semânticos em <code>:root</code> trocam de valor com <code>[data-theme]</code>, e qualquer bloco pode fixar um tema só para ele. Use sempre o token, nunca o hex.</p>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">2.1 · Despensa (cores de marca)</span></div>
+    <div class="drops" data-rv="stagger">
+      <div class="drop" style="--c:#F7F0E6"><i></i><b>Chantilly</b><code>#F7F0E6</code></div>
+      <div class="drop" style="--c:#EFE3D3"><i></i><b>Creme</b><code>#EFE3D3</code></div>
+      <div class="drop" style="--c:#E2B77E"><i></i><b>Doce de leite</b><code>#E2B77E</code></div>
+      <div class="drop" style="--c:#B87A3D"><i></i><b>Caramelo</b><code>#B87A3D</code></div>
+      <div class="drop" style="--c:#8F5626"><i></i><b>Caramelo tostado</b><code>#8F5626</code></div>
+      <div class="drop" style="--c:#E7A6B2"><i></i><b>Rosé</b><code>#E7A6B2</code></div>
+      <div class="drop" style="--c:#A8475C"><i></i><b>Framboesa</b><code>#A8475C</code></div>
+      <div class="drop" style="--c:#5A463B"><i></i><b>Canela</b><code>#5A463B</code></div>
+      <div class="drop" style="--c:#2B1D16"><i></i><b>Cacau</b><code>#2B1D16</code></div>
+      <div class="drop" style="--c:#120C09"><i></i><b>Chocolate amargo</b><code>#120C09</code></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">2.2 · Tokens semânticos · claro / escuro</span></div>
+    <div class="swatches" data-rv="stagger">
+      <div class="sw"><div class="sw-chip" style="--c:var(--bg)"></div><div class="sw-body"><b>Fundo</b><span class="tok">--bg</span><dl><dt>claro</dt><dd>#F7F0E6</dd><dt>escuro</dt><dd>#120C09</dd></dl><p>Chão da página e do loader.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--bg-2)"></div><div class="sw-body"><b>Fundo 2</b><span class="tok">--bg-2</span><dl><dt>claro</dt><dd>#EFE3D3</dd><dt>escuro</dt><dd>#1B130F</dd></dl><p>Seções alternadas, trilhos, palcos.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--surface)"></div><div class="sw-body"><b>Superfície</b><span class="tok">--surface</span><dl><dt>claro</dt><dd>#FCF8F2</dd><dt>escuro</dt><dd>#1E1611</dd></dl><p>Cards de papel e campos.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--ink)"></div><div class="sw-body"><b>Tinta</b><span class="tok">--ink</span><dl><dt>claro</dt><dd>#2B1D16</dd><dt>escuro</dt><dd>#F5EBDD</dd></dl><p>Títulos e texto forte.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--ink-2)"></div><div class="sw-body"><b>Tinta 2</b><span class="tok">--ink-2</span><dl><dt>claro</dt><dd>#5A463B</dd><dt>escuro</dt><dd>leite 74%</dd></dl><p>Texto corrido.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--muted)"></div><div class="sw-body"><b>Suave</b><span class="tok">--muted</span><dl><dt>claro</dt><dd>#7A6456</dd><dt>escuro</dt><dd>leite 56%</dd></dl><p>Legendas e metadados (AA).</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--accent)"></div><div class="sw-body"><b>Destaque</b><span class="tok">--accent</span><dl><dt>claro</dt><dd>#B87A3D</dd><dt>escuro</dt><dd>#E0AE6E</dd></dl><p>Itálicos grandes, ícones, bordas ativas.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--accent-ink)"></div><div class="sw-body"><b>Destaque texto</b><span class="tok">--accent-ink</span><dl><dt>claro</dt><dd>#8F5626</dd><dt>escuro</dt><dd>#E6B77C</dd></dl><p>Texto pequeno em destaque, com contraste AA.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--rose)"></div><div class="sw-body"><b>Framboesa</b><span class="tok">--rose</span><dl><dt>claro</dt><dd>#A8475C</dd><dt>escuro</dt><dd>#E7A6B2</dd></dl><p>Rabisco, favoritos e erro.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--band)"></div><div class="sw-body"><b>Faixa</b><span class="tok">--band</span><dl><dt>claro</dt><dd>#2B1D16</dd><dt>escuro</dt><dd>#1B130F</dd></dl><p>Faixas profundas e rodapé.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--line-2)"></div><div class="sw-body"><b>Filete</b><span class="tok">--line · --line-2</span><dl><dt>claro</dt><dd>cacau 11 / 20%</dd><dt>escuro</dt><dd>caramelo 13 / 26%</dd></dl><p>Divisores e contornos.</p></div></div>
+      <div class="sw"><div class="sw-chip" style="--c:var(--glass);background-image:linear-gradient(135deg,var(--glow-a),var(--glow-b))"></div><div class="sw-body"><b>Vidro</b><span class="tok">--glass</span><dl><dt>claro</dt><dd>creme 52%</dd><dt>escuro</dt><dd>leite 4,5%</dd></dl><p>Sempre com blur 16px e saturate 1.4.</p></div></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">2.3 · Os dois modos lado a lado</span></div>
+    <div class="theme-pair" data-rv="stagger">
+      <div class="theme-card" data-theme="light">
+        <div class="glow" style="background:var(--glow-a);top:-80px;right:-60px"></div><div class="glow" style="background:var(--glow-b);bottom:-120px;left:-80px"></div>
+        <span class="eyebrow">[data-theme="light"]</span>
+        <p class="h3">Chantilly <em>de dia.</em></p>
+        <p class="body-m">Creme quente, cacau no texto e caramelo tostado nos detalhes.</p>
+        <div class="row"><span class="btn btn-primary btn-sm">Encomendar</span><span class="btn btn-glass btn-sm">Cardápio</span></div>
+      </div>
+      <div class="theme-card" data-theme="dark">
+        <div class="glow" style="background:var(--glow-a);top:-80px;right:-60px"></div><div class="glow" style="background:var(--glow-b);bottom:-120px;left:-80px"></div>
+        <span class="eyebrow">[data-theme="dark"]</span>
+        <p class="h3">Ganache <em>à noite.</em></p>
+        <p class="body-m">Chocolate amargo no fundo, leite no texto e doce de leite na luz.</p>
+        <div class="row"><span class="btn btn-primary btn-sm">Encomendar</span><span class="btn btn-glass btn-sm">Cardápio</span></div>
+      </div>
+    </div>
+    <code class="ds-code">A troca de tema abre um círculo a partir do botão (View Transitions API). Sem suporte, as cores fazem um fade de .6s. A escolha fica salva em localStorage ("jh-theme").</code>
+
+    <div class="ds-sub"><span class="eyebrow">2.4 · Superfícies</span></div>
+    <div class="tiles" data-rv="stagger">
+      <figure><div class="tile-stage"><span class="label-s">Fundo da página</span></div><figcaption class="ds-code">.page-bg · fixo (z −1) · var(--bg) + 2 brilhos borrados 120px + grão SVG (opacidade .08 / .05). As seções são transparentes sobre ele.</figcaption></figure>
+      <figure><div class="tile-stage st-alt"><span class="label-s">Seção alternada</span></div><figcaption class="ds-code">.sec.alt · color-mix(var(--bg-2) 58%, transparent) · o grão continua aparecendo</figcaption></figure>
+      <figure><div class="tile-stage st-paper"><div class="paper"><span class="label-s">Papel</span></div></div><figcaption class="ds-code">card · var(--surface) · 1px var(--line) · var(--shadow-1) · raio 22px</figcaption></figure>
+      <figure><div class="tile-stage"><img src="assets/images/produto-brigadeiros.webp" alt="" loading="lazy"><div class="glass glass-card"><span class="label-s" style="color:var(--accent-ink)">Vidro fosco</span><p class="h4" style="font-size:1.2rem">Blur 16px · saturate 1.4</p></div></div><figcaption class="ds-code">.glass · var(--glass) · 1px var(--glass-border) · var(--glass-shadow) com brilho interno de 1px</figcaption></figure>
+      <figure><div class="tile-stage band"><div class="glow band-glow-a" style="width:220px;height:220px;right:-40px;top:-60px"></div><span class="label-s" style="position:relative">Faixa profunda</span></div><figcaption class="ds-code">.band · var(--band) · texto var(--on-band) · eyebrow var(--band-accent) · brilhos a 28%</figcaption></figure>
+      <figure><div class="tile-stage"><img src="assets/images/processo-confeitar.webp" alt="" loading="lazy"><span class="cap"><svg class="i" style="width:12px;height:12px"><use href="#i-sparkle"/></svg>Legenda de vidro</span></div><figcaption class="ds-code">.cap · rgba(43,29,22,.34) · blur 8px · pílula · sempre sobre foto</figcaption></figure>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">2.5 · Sobreposições &amp; degradês</span></div>
+    <div class="tiles four" data-rv="stagger">
+      <figure><div class="tile-stage" style="background:var(--grad-cta)"><span class="label-s" style="color:#2B1D16">CTA caramelo</span></div><figcaption class="ds-code">--grad-cta · 100deg #EDC690 → #D59C5A → #B87A3D</figcaption></figure>
+      <figure><div class="tile-stage" style="align-items:center;justify-content:center"><span class="lettering foil" style="font-size:3.4rem">Jhessica</span></div><figcaption class="ds-code">--grad-foil · folha de ouro animada · tostada no claro, dourada no escuro e sobre fundos escuros · só em lettering</figcaption></figure>
+      <figure><div class="tile-stage scrim-demo"><img src="assets/images/hero-dia.webp" alt="" loading="lazy" style="object-position:80% 50%"></div><figcaption class="ds-code">scrim do hero · 90deg rgb(var(--scrim)) sólido até 26% → 4% · + vinheta radial a 76% 50%</figcaption></figure>
+      <figure><div class="tile-stage shade-demo"><img src="assets/images/processo-bater.webp" alt="" loading="lazy"></div><figcaption class="ds-code">legenda de passo · 180deg transparente 40% → rgba(18,12,9,.88)</figcaption></figure>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">2.6 · Filetes, sombras &amp; raios</span></div>
+    <div class="tiles four" data-rv="stagger">
+      <figure><div class="edge" style="border:1px solid var(--line)"></div><figcaption class="ds-code">--line · divisores</figcaption></figure>
+      <figure><div class="edge" style="border:1px solid var(--line-2)"></div><figcaption class="ds-code">--line-2 · campos, chips</figcaption></figure>
+      <figure><div class="edge" style="border:1px solid color-mix(in srgb,var(--accent) 42%,transparent)"></div><figcaption class="ds-code">accent 42% · card em hover</figcaption></figure>
+      <figure><div class="edge" style="border:1px dotted var(--line-2);border-width:0 0 1px;border-radius:0"></div><figcaption class="ds-code">pontilhado · guia de preço do cardápio</figcaption></figure>
+      <figure><div class="shadow-tile" style="box-shadow:var(--shadow-1)"><span class="label-s">Repouso</span></div><figcaption class="ds-code">--shadow-1</figcaption></figure>
+      <figure><div class="shadow-tile" style="box-shadow:var(--shadow-2)"><span class="label-s">Elevado</span></div><figcaption class="ds-code">--shadow-2 · card em hover</figcaption></figure>
+      <figure><div class="shadow-tile glass"><span class="label-s">Vidro</span></div><figcaption class="ds-code">--glass-shadow</figcaption></figure>
+      <figure><div class="shadow-tile" style="box-shadow:var(--shadow-glow)"><span class="label-s">Brilho</span></div><figcaption class="ds-code">--shadow-glow · só no CTA</figcaption></figure>
+      <figure><div class="radius-tile" style="border-radius:var(--r-pill)"></div><figcaption class="ds-code">--r-pill · 100px · botões, chips, tags</figcaption></figure>
+      <figure><div class="radius-tile" style="border-radius:var(--r-card)"></div><figcaption class="ds-code">--r-card · 22px · cards (vidro grande: 28–32px)</figcaption></figure>
+      <figure><div class="radius-tile" style="border-radius:var(--r-media)"></div><figcaption class="ds-code">--r-media · 14px · fotos</figcaption></figure>
+      <figure><div class="radius-tile" style="border-radius:var(--r-sm)"></div><figcaption class="ds-code">--r-sm · 8px · pequenos</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════ 3 · COMPONENTES ═════════════════ -->
+<section class="sec" id="componentes">
+  <span class="watermark" data-speed="-.6" aria-hidden="true">receitas</span>
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">03 · Componentes</span></div>
+        <h2 class="h2 fast" data-split>Peças prontas <em>para confeitar.</em></h2>
+      </div>
+      <p class="sec-intro" data-rv>A coluna “Padrão” está ao vivo, então passe o mouse. As outras colunas fixam o estado com as classes <code>.is-hover</code>, <code>.is-active</code> e <code>.is-focus</code>, que repetem exatamente as regras de <code>:hover</code>, <code>:active</code> e <code>:focus-visible</code>.</p>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">3.1 · Botões &amp; links · estados</span></div>
+    <div class="ds-panel states-wrap" data-rv>
+      <div class="glow" style="background:var(--glow-a);top:-120px;right:10%"></div><div class="glow" style="background:var(--glow-b);bottom:-160px;left:20%"></div>
+      <div class="states-scroll"><div class="states">
+        <span></span><span class="label-s">Padrão · ao vivo</span><span class="label-s">Hover</span><span class="label-s">Ativo</span><span class="label-s">Foco</span><span class="label-s">Desabilitado</span>
+
+        <code class="st-name">.btn-primary</code>
+        <div><a class="btn btn-primary" href="#componentes">Encomendar<svg class="i arrow"><use href="#i-arrow"/></svg></a></div>
+        <div><span class="btn btn-primary is-hover">Encomendar<svg class="i arrow"><use href="#i-arrow"/></svg></span></div>
+        <div><span class="btn btn-primary is-active">Encomendar<svg class="i arrow"><use href="#i-arrow"/></svg></span></div>
+        <div><span class="btn btn-primary is-focus">Encomendar<svg class="i arrow"><use href="#i-arrow"/></svg></span></div>
+        <div><button class="btn btn-primary" type="button" disabled>Encomendar<svg class="i arrow"><use href="#i-arrow"/></svg></button></div>
+
+        <code class="st-name">.btn-dark</code>
+        <div><a class="btn btn-dark" href="#componentes">Ver cardápio</a></div>
+        <div><span class="btn btn-dark is-hover">Ver cardápio</span></div>
+        <div><span class="btn btn-dark is-active">Ver cardápio</span></div>
+        <div><span class="btn btn-dark is-focus">Ver cardápio</span></div>
+        <div><button class="btn btn-dark" type="button" disabled>Ver cardápio</button></div>
+
+        <code class="st-name">.btn-glass</code>
+        <div><a class="btn btn-glass" href="#componentes"><svg class="i"><use href="#i-cake"/></svg>Bolos</a></div>
+        <div><span class="btn btn-glass is-hover"><svg class="i"><use href="#i-cake"/></svg>Bolos</span></div>
+        <div><span class="btn btn-glass is-active"><svg class="i"><use href="#i-cake"/></svg>Bolos</span></div>
+        <div><span class="btn btn-glass is-focus"><svg class="i"><use href="#i-cake"/></svg>Bolos</span></div>
+        <div><button class="btn btn-glass" type="button" disabled><svg class="i"><use href="#i-cake"/></svg>Bolos</button></div>
+
+        <code class="st-name">.btn-outline</code>
+        <div><a class="btn btn-outline" href="#componentes">Encomendar</a></div>
+        <div><span class="btn btn-outline is-hover">Encomendar</span></div>
+        <div><span class="btn btn-outline is-active">Encomendar</span></div>
+        <div><span class="btn btn-outline is-focus">Encomendar</span></div>
+        <div><button class="btn btn-outline" type="button" disabled>Encomendar</button></div>
+
+        <code class="st-name">.link-u</code>
+        <div><a class="link-u" href="#componentes">Cardápio</a></div>
+        <div><span class="link-u is-hover">Cardápio</span></div>
+        <div><span class="link-u is-current">Cardápio</span><code class="ds-code" style="margin-top:.6rem">.is-current (scrollspy)</code></div>
+        <div><span class="link-u" style="outline:2px solid var(--accent);outline-offset:3px">Cardápio</span></div>
+        <span class="label-s">—</span>
+
+        <code class="st-name">.icon-btn</code>
+        <div><a class="icon-btn" href="#componentes" aria-label="Instagram"><svg class="i"><use href="#i-insta"/></svg></a></div>
+        <div><span class="icon-btn is-hover"><svg class="i"><use href="#i-insta"/></svg></span></div>
+        <div><span class="icon-btn is-active"><svg class="i"><use href="#i-insta"/></svg></span></div>
+        <div><span class="icon-btn is-focus"><svg class="i"><use href="#i-insta"/></svg></span></div>
+        <div><button class="icon-btn" type="button" disabled style="opacity:.4" aria-label="Instagram"><svg class="i"><use href="#i-insta"/></svg></button></div>
+
+        <code class="st-name">.chip</code>
+        <div><button class="chip" type="button">Tortas</button></div>
+        <div><span class="chip is-hover">Tortas</span></div>
+        <div><span class="chip is-on">Tortas</span><code class="ds-code" style="margin-top:.6rem">[aria-selected=true]</code></div>
+        <div><span class="chip" style="outline:2px solid var(--accent);outline-offset:3px">Tortas</span></div>
+        <div><button class="chip" type="button" disabled style="opacity:.4">Tortas</button></div>
+      </div></div>
+    </div>
+    <code class="ds-code">Transições: .btn transform .45s var(--ease-out), cores .35s · brilho do .btn-primary atravessa em .9s · .link-u sublinhado scaleX .5s (entra pela esquerda, sai pela direita).</code>
+
+    <div class="ds-sub"><span class="eyebrow">3.2 · Campos · estados</span></div>
+    <div class="fields-row" data-rv="stagger">
+      <div class="field"><label for="f1">Padrão · ao vivo</label><input class="input" id="f1" type="text" placeholder="Como podemos te chamar?"></div>
+      <div class="field"><label for="f2">Foco</label><input class="input is-focus" id="f2" type="text" placeholder="Como podemos te chamar?"></div>
+      <div class="field"><label for="f3">Preenchido</label><input class="input" id="f3" type="text" value="Marina Alves"></div>
+      <div class="field"><label for="f4">Erro</label><input class="input" id="f4" type="tel" value="(00) 9 99" aria-invalid="true" aria-describedby="f4m"><span class="msg" id="f4m"><svg class="i"><use href="#i-alert"/></svg>Confira o número de WhatsApp.</span></div>
+      <div class="field"><label for="f5">Desabilitado</label><input class="input" id="f5" type="text" value="Retirada no ateliê" disabled></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">3.3 · Formulário de encomenda &amp; seleções</span></div>
+    <div class="form-split">
+      <form class="glass order" data-rv onsubmit="return false" aria-labelledby="orderTitle">
+        <div class="glow" style="background:var(--glow-a);width:380px;height:380px;top:-160px;right:-120px"></div>
+        <span class="eyebrow">Encomenda</span>
+        <h3 class="h3" id="orderTitle">Conte a <em>ocasião.</em></h3>
+        <div class="form-grid">
+          <div class="field"><label for="o1">Nome</label><input class="input" id="o1" type="text" placeholder="Como podemos te chamar?" autocomplete="name"></div>
+          <div class="field"><label for="o2">WhatsApp</label><input class="input" id="o2" type="tel" placeholder="(00) 0 0000-0000" autocomplete="tel"></div>
+          <div class="field"><label for="o3">Ocasião</label><select class="input" id="o3"><option>Aniversário</option><option>Casamento</option><option>Chá de bebê</option><option>Corporativo</option><option>Só porque sim</option></select></div>
+          <div class="field"><label for="o4">Data de entrega</label><input class="input" id="o4" type="date"></div>
+          <div class="field full"><label for="o5">Sabor</label><select class="input" id="o5"><option>Naked de frutas vermelhas</option><option>Nozes com doce de leite</option><option>Red velvet</option><option>Chocolate belga</option></select></div>
+          <fieldset class="field full" style="border:0"><legend class="flabel" style="margin-bottom:.5rem;font-size:.6rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)">Tamanho</legend>
+            <div class="opts"><label class="opt"><input type="radio" name="size"><span>1 kg</span></label><label class="opt"><input type="radio" name="size" checked><span>1,5 kg</span></label><label class="opt"><input type="radio" name="size"><span>2 kg</span></label><label class="opt"><input type="radio" name="size"><span>3 kg</span></label></div>
+          </fieldset>
+          <div class="field full"><label for="o6">Observações</label><textarea class="input" id="o6" rows="3" placeholder="Alergias, tema da festa, frase no topo…"></textarea></div>
+          <label class="check full"><input type="checkbox" checked><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Quero receber o cardápio de datas especiais</label>
+          <button class="btn btn-primary btn-block full" type="submit"><svg class="i"><use href="#i-msg"/></svg>Enviar pedido pelo WhatsApp</button>
+        </div>
+      </form>
+      <div class="stack">
+        <div class="ds-panel" data-rv>
+          <span class="label-s">Newsletter · .signup</span>
+          <form class="signup" onsubmit="return false"><input type="email" placeholder="seu@email.com" aria-label="E-mail"><button class="btn btn-primary btn-sm" type="submit">Assinar</button></form>
+          <form class="signup is-focus" onsubmit="return false"><input type="email" value="marina@email.com" aria-label="E-mail"><button class="btn btn-primary btn-sm" type="submit">Assinar</button></form>
+          <code class="ds-code" style="margin-top:0">:focus-within → borda var(--accent) + anel de 4px a 15%</code>
+        </div>
+        <div class="ds-panel" data-rv>
+          <span class="label-s">Tags · .tag</span>
+          <div class="tags">
+            <span class="tag tag-caramel"><svg class="i"><use href="#i-star"/></svg>Mais pedido</span>
+            <span class="tag tag-rose"><svg class="i"><use href="#i-heart"/></svg>Presente</span>
+            <span class="tag tag-line"><svg class="i"><use href="#i-wheat"/></svg>Sem glúten</span>
+            <span class="tag tag-line"><svg class="i"><use href="#i-leaf"/></svg>Sem lactose</span>
+            <span class="tag tag-solid">Novo</span>
+            <span class="tag tag-glass"><svg class="i"><use href="#i-sparkle"/></svg>Edição de Natal</span>
+          </div>
+          <code class="ds-code" style="margin-top:0">.tag-caramel · .tag-rose · .tag-line · .tag-solid · .tag-glass (sobre foto)</code>
+        </div>
+        <div class="ds-panel" data-rv>
+          <span class="label-s">Seleções · .opt · .check · .chip</span>
+          <div class="opts"><label class="opt"><input type="radio" name="d2" checked><span>Retirar</span></label><label class="opt"><input type="radio" name="d2"><span>Entregar</span></label></div>
+          <label class="check"><input type="checkbox"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Embalagem de presente</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">3.4 · Cards de produto</span></div>
+    <div class="products" data-rv="stagger">
+      <article class="p-card" data-tilt="6">
+        <div class="p-media"><img src="assets/images/produto-bolo-frutas.webp" alt="Fatia de naked cake com creme e frutas vermelhas" loading="lazy"><span class="tag tag-glass"><svg class="i"><use href="#i-star"/></svg>Mais pedido</span><button class="fav" type="button" aria-pressed="false" aria-label="Favoritar naked de frutas vermelhas"><svg class="i"><use href="#i-heart"/></svg></button><a class="quick" href="#componentes"><svg class="i"><use href="#i-plus"/></svg>Ver detalhes</a></div>
+        <div class="p-body"><span class="label-s">Padrão · ao vivo · Bolos · 1,5 kg</span><h3 class="h4">Naked de frutas vermelhas</h3><p class="body-m">Pão de ló de baunilha, creme de mascarpone e frutas vermelhas frescas por cima.</p><div class="p-row"><span class="price"><small>R$</small>189</span><a class="btn btn-outline" href="#componentes">Encomendar</a></div></div>
+      </article>
+      <article class="p-card is-hover" data-tilt="6">
+        <div class="p-media"><img src="assets/images/produto-brigadeiros.webp" alt="Caixa kraft com brigadeiros gourmet de chocolate, pistache e ninho" loading="lazy"><span class="tag tag-glass"><svg class="i"><use href="#i-gift"/></svg>Presente</span><button class="fav" type="button" aria-pressed="false" aria-label="Favoritar caixa de brigadeiros"><svg class="i"><use href="#i-heart"/></svg></button><a class="quick" href="#componentes"><svg class="i"><use href="#i-plus"/></svg>Ver detalhes</a></div>
+        <div class="p-body"><span class="label-s">Hover · fixado · Doces finos · 12 un.</span><h3 class="h4">Caixa de brigadeiros</h3><p class="body-m">Sobe 6px, sombra funda, borda caramelo a 42%, foto com zoom 1.08 e o botão de vidro sobe da base.</p><div class="p-row"><span class="price"><small>R$</small>72</span><a class="btn btn-outline" href="#componentes">Encomendar</a></div></div>
+      </article>
+      <article class="p-card" data-tilt="6">
+        <div class="p-media"><img src="assets/images/produto-torta-limao.webp" alt="Torta de limão com merengue maçaricado e uma fatia cortada" loading="lazy"><span class="tag tag-solid">Novo</span><button class="fav" type="button" aria-pressed="true" aria-label="Favoritar torta de limão"><svg class="i"><use href="#i-heart"/></svg></button><a class="quick" href="#componentes"><svg class="i"><use href="#i-plus"/></svg>Ver detalhes</a></div>
+        <div class="p-body"><span class="label-s">Favorito ativo · Tortas · 20 cm</span><h3 class="h4">Torta de limão siciliano</h3><p class="body-m">Clique no coração: ele enche de framboesa com um pequeno pulo. Massa amanteigada e merengue maçaricado.</p><div class="p-row"><span class="price"><small>R$</small>138</span><a class="btn btn-outline" href="#componentes">Encomendar</a></div></div>
+      </article>
+    </div>
+    <code class="ds-code">.p-card · foto 4:3 · corpo 1.4rem 1.5rem · inclinação 3D de até 6° com reflexo que segue o cursor · a foto desliza no sentido oposto (profundidade) · .quick sempre visível em telas de toque.</code>
+
+    <div class="ds-sub"><span class="eyebrow">3.5 · Cards de vidro</span></div>
+    <div class="trio-wrap" data-rv>
+      <div class="glow" style="background:var(--glow-a);width:420px;height:420px;left:-80px;top:-160px"></div><div class="glow" style="background:var(--glow-b);width:380px;height:380px;right:-60px;bottom:-200px"></div>
+      <div class="trio">
+        <div class="glass glass-card info" data-tilt="8"><div><span class="label-s">Prazo</span><p class="h3">48 horas</p><p class="body-s">de antecedência para bolos</p></div><span class="well"><svg class="i"><use href="#i-clock"/></svg></span></div>
+        <div class="glass glass-card info" data-tilt="8"><div><span class="label-s">Entrega</span><p class="h3">Na sua porta</p><p class="body-s">com embalagem térmica</p></div><span class="well"><svg class="i"><use href="#i-truck"/></svg></span></div>
+        <div class="glass glass-card info" data-tilt="8"><div><span class="label-s">Presente</span><p class="h3">Laço de cetim</p><p class="body-s">e cartão escrito à mão</p></div><span class="well"><svg class="i"><use href="#i-gift"/></svg></span></div>
+        <div class="glass glass-card feature" data-tilt="8"><span class="well"><svg class="i"><use href="#i-leaf"/></svg></span><div><p class="h4">Ingredientes de verdade</p><p class="body-m">Manteiga, ovos caipiras, baunilha em fava. Sem conservantes.</p></div></div>
+        <div class="glass glass-card feature" data-tilt="8"><span class="well"><svg class="i"><use href="#i-whisk"/></svg></span><div><p class="h4">Receitas autorais</p><p class="body-m">Testadas e ajustadas até o ponto certo de cada recheio.</p></div></div>
+        <div class="glass glass-card feature" data-tilt="8"><span class="well"><svg class="i"><use href="#i-calendar"/></svg></span><div><p class="h4">Sob encomenda</p><p class="body-m">Cada pedido é feito para a sua data, nunca de estoque.</p></div></div>
+      </div>
+    </div>
+    <code class="ds-code">.glass.glass-card.info (número + poço de ícone) · .glass.glass-card.feature (poço + título + texto) · .well 48px · o vidro só funciona com algo colorido atrás: brilhos, foto ou o chão da página.</code>
+
+    <div class="ds-sub"><span class="eyebrow">3.6 · Cardápio com abas</span></div>
+    <div class="glass carte" data-rv data-tabscope>
+      <div>
+        <div class="carte-top">
+          <div><span class="eyebrow">Cardápio</span><h3 class="h3">A <em>carta</em> de doces</h3></div>
+          <div class="tabs" role="tablist" aria-label="Categorias" data-tabs>
+            <button class="chip" role="tab" id="t-bolos" aria-selected="true" aria-controls="p-bolos" data-img="assets/images/produto-bolo-frutas.webp">Bolos</button>
+            <button class="chip" role="tab" id="t-doces" aria-selected="false" aria-controls="p-doces" tabindex="-1">Doces finos</button>
+            <button class="chip" role="tab" id="t-tortas" aria-selected="false" aria-controls="p-tortas" tabindex="-1">Tortas</button>
+          </div>
+        </div>
+        <div role="tabpanel" id="p-bolos" aria-labelledby="t-bolos">
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Naked de frutas vermelhas</h4><span class="m-dots"></span><span class="price"><small>R$</small>189</span></div><p class="body-m">Pão de ló de baunilha, mascarpone e frutas da estação. 1,5 kg.</p></div>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Nozes com doce de leite</h4><span class="m-dots"></span><span class="price"><small>R$</small>172</span></div><p class="body-m">Massa amanteigada de nozes e doce de leite cozido por horas. 1,5 kg.</p></div>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Red velvet</h4><span class="m-dots"></span><span class="price"><small>R$</small>181</span></div><p class="body-m">Massa aveludada de cacau e cobertura de cream cheese. 1,5 kg.</p></div>
+        </div>
+        <div role="tabpanel" id="p-doces" aria-labelledby="t-doces" hidden>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Brigadeiro belga</h4><span class="m-dots"></span><span class="price"><small>R$</small>290</span></div><p class="body-m">Chocolate belga 54%, enrolado à mão. Cento.</p></div>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Bem-casado</h4><span class="m-dots"></span><span class="price"><small>R$</small>380</span></div><p class="body-m">Pão de ló fofinho com doce de leite, embrulhado em papel de seda. Cento.</p></div>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Camafeu de nozes</h4><span class="m-dots"></span><span class="price"><small>R$</small>420</span></div><p class="body-m">Nozes, fondant e meia noz por cima. Cento.</p></div>
+        </div>
+        <div role="tabpanel" id="p-tortas" aria-labelledby="t-tortas" hidden>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Limão siciliano</h4><span class="m-dots"></span><span class="price"><small>R$</small>138</span></div><p class="body-m">Creme de limão e merengue maçaricado na hora. 20 cm.</p></div>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Banoffee</h4><span class="m-dots"></span><span class="price"><small>R$</small>146</span></div><p class="body-m">Doce de leite, banana e chantilly batido na mão. 20 cm.</p></div>
+          <div class="m-item"><div class="m-top"><h4 class="m-name">Frutas vermelhas</h4><span class="m-dots"></span><span class="price"><small>R$</small>152</span></div><p class="body-m">Creme de baunilha e frutas frescas com geleia de brilho. 20 cm.</p></div>
+        </div>
+      </div>
+      <div class="carte-feat" data-tilt="7" aria-hidden="true">
+        <img class="on" data-feat="p-bolos" src="assets/images/produto-bolo-frutas.webp" alt="" loading="lazy">
+        <img data-feat="p-doces" src="assets/images/produto-brigadeiros.webp" alt="" loading="lazy">
+        <img data-feat="p-tortas" src="assets/images/produto-torta-limao.webp" alt="" loading="lazy">
+        <span class="cap"><svg class="i" style="width:12px;height:12px"><use href="#i-sparkle"/></svg>Foto da categoria</span>
+      </div>
+    </div>
+    <code class="ds-code">.carte · vidro raio 32px · abas .chip[role=tab] com setas do teclado · itens sobem em sequência (.08s) · a foto da categoria troca com fade + zoom e reage à inclinação.</code>
+
+    <div class="ds-sub"><span class="eyebrow">3.7 · Depoimentos &amp; perguntas frequentes</span></div>
+    <div class="duo">
+      <div class="glass quotes" data-rv aria-roledescription="carrossel" aria-label="Depoimentos">
+        <div class="qstack">
+          <figure class="qslide on" data-quote><span class="qmark" aria-hidden="true">“</span><blockquote class="quote">O bolo do aniversário da minha mãe estava lindo <em>e ainda mais gostoso.</em></blockquote><figcaption class="qwho"><b>Carla M.</b><span class="tag tag-caramel">Aniversário</span></figcaption></figure>
+          <figure class="qslide" data-quote><span class="qmark" aria-hidden="true">“</span><blockquote class="quote">Os bem-casados foram <em>o assunto da festa.</em></blockquote><figcaption class="qwho"><b>Rafael &amp; Júlia</b><span class="tag tag-rose">Casamento</span></figcaption></figure>
+          <figure class="qslide" data-quote><span class="qmark" aria-hidden="true">“</span><blockquote class="quote">Pedi para o escritório e virou <em>tradição de sexta.</em></blockquote><figcaption class="qwho"><b>Patrícia S.</b><span class="tag tag-line">Corporativo</span></figcaption></figure>
+        </div>
+        <div class="qdots"><button type="button" data-dot aria-current="true" aria-label="Depoimento 1"></button><button type="button" data-dot aria-current="false" aria-label="Depoimento 2"></button><button type="button" data-dot aria-current="false" aria-label="Depoimento 3"></button></div>
+        <code class="ds-code">Textos de exemplo. Troca a cada 5,5 s com fade + subida de 12px (.9s). Pausa com movimento reduzido.</code>
+      </div>
+      <div data-rv>
+        <details class="faq" name="faq" open><summary>Com quanto tempo devo encomendar?<span class="pm"><svg class="i"><use href="#i-plus"/></svg></span></summary><div class="ans"><p class="body-m">Bolos e doces com pelo menos 48 horas. Para casamentos e festas grandes, o ideal é reservar a data com 30 dias.</p></div></details>
+        <details class="faq" name="faq"><summary>Vocês entregam?<span class="pm"><svg class="i"><use href="#i-plus"/></svg></span></summary><div class="ans"><p class="body-m">Sim, com embalagem térmica. Também dá para retirar no ateliê com horário marcado.</p></div></details>
+        <details class="faq" name="faq"><summary>Dá para adaptar sabor e tamanho?<span class="pm"><svg class="i"><use href="#i-plus"/></svg></span></summary><div class="ans"><p class="body-m">Dá sim. Cada receita pode ser ajustada em tamanho, recheio e decoração. Conte a ocasião e a gente sugere.</p></div></details>
+        <code class="ds-code">details[name] nativo (abre um por vez) · altura anima com ::details-content + interpolate-size · o “+” gira 45° e vira caramelo.</code>
+      </div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">3.8 · Faixa de avisos</span></div>
+    <div class="marquee ann" data-rv aria-label="Avisos">
+      <div class="mq-track">
+        <div class="mq"><span>Encomendas com 48 h de antecedência</span><svg class="i"><use href="#i-sparkle"/></svg><span>Entrega com embalagem térmica</span><svg class="i"><use href="#i-sparkle"/></svg><span>Casamentos sob consulta</span><svg class="i"><use href="#i-sparkle"/></svg><span>Cardápio de Natal no ar</span><svg class="i"><use href="#i-sparkle"/></svg></div>
+        <div class="mq" aria-hidden="true"><span>Encomendas com 48 h de antecedência</span><svg class="i"><use href="#i-sparkle"/></svg><span>Entrega com embalagem térmica</span><svg class="i"><use href="#i-sparkle"/></svg><span>Casamentos sob consulta</span><svg class="i"><use href="#i-sparkle"/></svg><span>Cardápio de Natal no ar</span><svg class="i"><use href="#i-sparkle"/></svg></div>
+      </div>
+    </div>
+    <code class="ds-code">.marquee.ann · pílula var(--band) · @keyframes tick 32s linear · pausa no hover · conteúdo duplicado com aria-hidden para o laço sem emenda. O rodapé desta página é o padrão de rodapé.</code>
+  </div>
+</section>
+
+<!-- ═════════════════ 4 · LAYOUT & ESPAÇAMENTO ═════════════════ -->
+<section class="sec alt" id="layout">
+  <span class="watermark" data-speed="-.6" aria-hidden="true">medidas</span>
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">04 · Layout &amp; espaçamento</span></div>
+        <h2 class="h2 fast" data-split>Medidas de <em>receita.</em></h2>
+      </div>
+      <p class="sec-intro" data-rv>Um container de 1360px com respiro fluido, grid de 12 colunas e seções com ritmo em altura de tela. Imagens grandes saem do container e ocupam a largura toda.</p>
+    </div>
+
+    <div class="glass spec" data-rv>
+      <div class="spec-row"><span class="eyebrow">--pad · respiro lateral</span><code class="ds-code">clamp(20px, 5vw, 80px)</code></div>
+      <div class="spec-row"><span class="eyebrow">.container</span><code class="ds-code">max-width var(--max) 1360px · padding 0 var(--pad) · margin 0 auto</code></div>
+      <div class="spec-row"><span class="eyebrow">.sec · ritmo vertical</span><code class="ds-code">padding var(--sec-y) 0 · clamp(5rem, 12vh, 9rem) → 80–144px</code></div>
+      <div class="spec-row"><span class="eyebrow">Grid</span><code class="ds-code">12 colunas · gap var(--gutter) clamp(1.25rem, 2.5vw, 2.5rem)</code></div>
+      <div class="spec-row"><span class="eyebrow">.hero</span><code class="ds-code">min-height 100svh · cópia col 1–7 · cartões col 9–12 · padding-top clamp(7.5rem, 15vh, 9.5rem)</code></div>
+      <div class="spec-row"><span class="eyebrow">Pontos de quebra</span><code class="ds-code">1060 hero empilha e nav vira gaveta · 1000 produtos 2 col · 900 dividido e cardápio empilham · 800 números 2 col · 640 uma coluna</code></div>
+      <div class="spec-row"><span class="eyebrow">Camadas (z-index)</span><code class="ds-code">chão −1 · conteúdo 1–6 · nav 80 · véu 85 · gaveta 90 · loader 120</code></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">4.1 · Escala de espaçamento</span></div>
+    <div class="ds-panel space" data-rv>
+      <div class="sp"><code>--s-1 · 4</code><i style="--s:4px"></i></div>
+      <div class="sp"><code>--s-2 · 8</code><i style="--s:8px"></i></div>
+      <div class="sp"><code>--s-3 · 12</code><i style="--s:12px"></i></div>
+      <div class="sp"><code>--s-4 · 16</code><i style="--s:16px"></i></div>
+      <div class="sp"><code>--s-5 · 24</code><i style="--s:24px"></i></div>
+      <div class="sp"><code>--s-6 · 32</code><i style="--s:32px"></i></div>
+      <div class="sp"><code>--s-7 · 48</code><i style="--s:48px"></i></div>
+      <div class="sp"><code>--s-8 · 64</code><i style="--s:64px"></i></div>
+      <div class="sp"><code>--s-9 · 96</code><i style="--s:96px"></i></div>
+      <div class="sp"><code>--s-10 · 128</code><i style="--s:128px"></i></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">4.2 · Grid de 12 colunas &amp; padrão A · hero 7/5</span></div>
+    <div class="ds-panel" data-rv>
+      <div class="grid12"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i><i>11</i><i>12</i><i class="span7">cópia · 7</i><i class="span4">vidro · 4</i></div>
+      <div class="schema" style="margin-top:1.6rem" aria-hidden="true">
+        <div class="sc-nav"><i></i><b></b><b></b><b></b><b></b><em></em></div>
+        <div class="sc-body">
+          <div class="sc-copy"><span style="width:40%"></span><span class="big" style="width:70%"></span><span class="big acc" style="width:48%"></span><span style="width:85%"></span><span style="width:60%"></span><div class="btns"><i></i><i></i></div></div>
+          <div class="sc-aside"><i class="tall"></i><i></i><i></i></div>
+        </div>
+      </div>
+      <code class="ds-code">Hero: foto de fundo com scrim de 90° da cor do tema (texto sempre legível), brilhos, açúcar em canvas, cópia na col 1–7 e três cartões de vidro empilhados e desencontrados na col 9–12.</code>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">4.3 · Padrão B · dividido (.split.rev)</span></div>
+    <div class="split rev">
+      <div class="media" data-curtain="22"><img src="assets/images/atelie-ingredientes.webp" alt="Bancada com ovos caipiras, manteiga, fava de baunilha e farinha sobre linho" loading="lazy" data-par><span class="cap">.media · cortina + parallax</span></div>
+      <div class="copy">
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">Padrão B · Dividido</span></div>
+        <h3 class="h3" data-rv>Poucos ingredientes, <em>escolhidos um a um.</em></h3>
+        <p class="body-l" data-rv>.split usa 1.1fr / .9fr e .split.rev inverte para .9fr / 1.1fr com a mídia à direita. A foto entra como uma cortina: começa recortada com cantos arredondados e abre até o raio de 22px enquanto você rola.</p>
+        <p class="body-l" data-rv>Abaixo de 900px as colunas empilham e a foto fica com 52vh.</p>
+        <div class="meta" data-rv="stagger">
+          <div><div class="k">5</div><div class="l">ingredientes-base</div></div>
+          <div><div class="k">160°</div><div class="l">forno baixo</div></div>
+          <div><div class="k">1</div><div class="l">receita por vez</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">4.4 · Padrão C · galeria bento</span></div>
+    <div class="bento">
+      <figure class="b-tile b1" data-rv="3d" data-tilt="4"><img src="assets/images/mesa-doces.webp" alt="Mesa de festa com bolo pequeno, bem-casados, macarons e flores do campo" loading="lazy"><span class="cap">2 × 2 · destaque</span></figure>
+      <figure class="b-tile" data-rv="3d" data-tilt="6"><img src="assets/images/produto-torta-limao.webp" alt="Torta de limão com merengue" loading="lazy"><span class="cap">1 × 1</span></figure>
+      <figure class="b-tile" data-rv="3d" data-tilt="6"><img src="assets/images/processo-confeitar.webp" alt="Mãos confeitando um bolo com saco de confeitar" loading="lazy"><span class="cap">1 × 1</span></figure>
+      <figure class="b-tile b4" data-rv="3d" data-tilt="4"><img src="assets/images/faixa-acucar.webp" alt="Açúcar de confeiteiro caindo sobre um bolo de chocolate" loading="lazy"><span class="cap">2 × 1 · panorama</span></figure>
+    </div>
+    <code class="ds-code">.bento · 4 colunas · linhas clamp(170px, 18vw, 260px) · gap 1rem · entrada 3D (rotateX 14° → 0, perspectiva 1100px) · zoom 1.12 no hover · 2 colunas abaixo de 800px.</code>
+
+    <div class="pointer"><svg class="i"><use href="#i-arrow"/></svg><span class="eyebrow">Padrão D · faixa de números · Padrão E · interlúdio em tela cheia</span></div>
+  </div>
+</section>
+
+<section class="band sec" aria-label="Números">
+  <div class="glow band-glow-a" style="width:520px;height:520px;left:-120px;top:-200px"></div>
+  <div class="glow band-glow-b" style="width:460px;height:460px;right:-100px;bottom:-240px"></div>
+  <div class="container">
+    <div class="numgrid">
+      <div data-rv><div class="stat" data-count="48" data-suf="h">48<em>h</em></div><div class="l">de antecedência mínima</div></div>
+      <div data-rv><div class="stat" data-count="1200" data-pre="+">+1.200</div><div class="l">bolos já entregues</div></div>
+      <div data-rv><div class="stat" data-count="100" data-suf="%">100<em>%</em></div><div class="l">manteiga de verdade</div></div>
+      <div data-rv><div class="stat" data-count="0">0</div><div class="l">conservantes, nunca</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="interlude" aria-label="Interlúdio">
+  <div class="frame" data-curtain="0"><img src="assets/images/faixa-acucar.webp" alt="Mãos polvilhando açúcar de confeiteiro sobre um bolo de chocolate" loading="lazy" data-par></div>
+  <div class="q">
+    <span class="lettering foil" data-rv>com carinho</span>
+    <blockquote data-split>Tudo o que é bom leva o tempo do forno.</blockquote>
+  </div>
+</section>
+
+<!-- ═════════════════ 5 · MOVIMENTO & INTERAÇÃO ═════════════════ -->
+<section class="sec" id="movimento">
+  <span class="watermark" data-speed="-.6" aria-hidden="true">sem pressa</span>
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">05 · Movimento &amp; interação</span></div>
+        <h2 class="h2 fast" data-split>Nada aqui <em>tem pressa.</em></h2>
+      </div>
+      <p class="sec-intro" data-rv>GSAP e ScrollTrigger cuidam das entradas, do parallax, das cortinas, dos contadores e do trilho horizontal, tudo sobre a rolagem macia do Lenis. O CSS cuida dos hovers. Com movimento reduzido, tudo fica visível e parado.</p>
+    </div>
+
+    <div class="glass spec" data-rv>
+      <div class="spec-row"><span class="eyebrow">Lenis</span><code class="ds-code">lerp .085 · smoothWheel · relógio compartilhado com gsap.ticker · âncoras scrollTo offset −10, 1.4s</code></div>
+      <div class="spec-row"><span class="eyebrow">Loader</span><code class="ds-code">barra suavizada até o % de imagens [data-preload] · “no forno · n%” · sai com cortina clip-path para cima, 1.1s var(--ease-io) · segurança 6s</code></div>
+      <div class="spec-row"><span class="eyebrow">Entrada do hero</span><code class="ds-code">eyebrow y20 → letras 3D (32ms por letra) → lettering escala .8 + giro −16° (expo) → rabisco 1s → ornamento → lead → CTAs → cartões entram de lado com rotateY −24°</code></div>
+      <div class="spec-row"><span class="eyebrow">Letras [data-split]</span><code class="ds-code">.cm máscara com perspective 500px · .ch translateY 110% + rotateX −65° + blur 12px → 0 · 1.4s var(--ease-out) · .fast 18ms por letra</code></div>
+      <div class="spec-row"><span class="eyebrow">Surgir [data-rv]</span><code class="ds-code">opacity 0, y 48 → 1, 0 · 1.2s power3.out · início top 88% · "stagger" anima os filhos (.09s) · "3d" soma rotateX 14°</code></div>
+      <div class="spec-row"><span class="eyebrow">Parallax</span><code class="ds-code">foto do hero yPercent 12 · cópia sobe 70px e esmaece · cartões sobem 140px · [data-par] −8 → 8% · [data-speed] marcas-d’água · brilhos do chão · tudo scrub</code></div>
+      <div class="spec-row"><span class="eyebrow">Cortina [data-curtain]</span><code class="ds-code">clip-path inset(10% 8% round 40px) → inset(0 round N px) + foto scale 1.22 → 1 · scrub de top 95% até top 30%</code></div>
+      <div class="spec-row"><span class="eyebrow">Inclinação [data-tilt]</span><code class="ds-code">até N° em X/Y · perspectiva 1000px · reflexo radial segue o cursor · filhos com --px/--py deslizam ao contrário · volta em .9s · só com mouse</code></div>
+      <div class="spec-row"><span class="eyebrow">Profundidade [data-depth]</span><code class="ds-code">no hero, brilhos, lettering e cartões seguem o cursor em camadas (gsap.quickTo 1.2s power3)</code></div>
+      <div class="spec-row"><span class="eyebrow">Contador [data-count]</span><code class="ds-code">1.8s power2.out · uma vez em top 88% · formato pt-BR · prefixo/sufixo por data-pre / data-suf</code></div>
+      <div class="spec-row"><span class="eyebrow">Trilho fixado</span><code class="ds-code">.process fixado · trilho x → −(scrollWidth − largura) · fotos deslizam ±10% dentro do quadro (containerAnimation) · barra de progresso</code></div>
+      <div class="spec-row"><span class="eyebrow">Nav</span><code class="ds-code">scrollY &gt; 60 → .docked (vidro) · descendo após 500px → some · subindo → volta · scrollspy marca .is-current</code></div>
+      <div class="spec-row"><span class="eyebrow">Ambiente</span><code class="ds-code">açúcar em canvas ~30fps, pausa fora da tela · brilhos @keyframes drift 18–23s · faixa rolante acelera com a velocidade da rolagem · ornamento twinkle 3.6s · anel do monograma spin 30s</code></div>
+      <div class="spec-row"><span class="eyebrow">Tema</span><code class="ds-code">círculo que abre do botão (View Transitions, .8s var(--ease-io)) · foto do hero troca dia/noite com fade de 1.1s</code></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">5.1 · Curvas</span></div>
+    <div class="eases" data-rv="stagger">
+      <div class="ease"><span class="eyebrow">--ease-out</span><svg viewBox="0 0 100 100" aria-hidden="true"><path class="axis" d="M0 0V100H100"/><path class="curve" d="M0 100C20 20 20 0 100 0"/></svg><div class="track" style="--e:var(--ease-out)"><i></i></div><code class="ds-code">.2 .8 .2 1 · entradas, reveals</code></div>
+      <div class="ease"><span class="eyebrow">--ease-soft</span><svg viewBox="0 0 100 100" aria-hidden="true"><path class="axis" d="M0 0V100H100"/><path class="curve" d="M0 100C25 54 45 6 100 0"/></svg><div class="track" style="--e:var(--ease-soft)"><i></i></div><code class="ds-code">.25 .46 .45 .94 · zoom de foto</code></div>
+      <div class="ease"><span class="eyebrow">--ease-draw</span><svg viewBox="0 0 100 100" aria-hidden="true"><path class="axis" d="M0 0V100H100"/><path class="curve" d="M0 100C55 100 10 0 100 0"/></svg><div class="track" style="--e:var(--ease-draw)"><i></i></div><code class="ds-code">.55 0 .1 1 · rabisco</code></div>
+      <div class="ease"><span class="eyebrow">--ease-io</span><svg viewBox="0 0 100 100" aria-hidden="true"><path class="axis" d="M0 0V100H100"/><path class="curve" d="M0 100C70 100 20 0 100 0"/></svg><div class="track" style="--e:var(--ease-io)"><i></i></div><code class="ds-code">.7 0 .2 1 · tema, loader</code></div>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">5.2 · Galeria de movimento</span></div>
+    <div class="demos">
+      <div class="demo" data-rv><div class="demo-stage"><div class="lw"><svg class="mono" viewBox="0 0 80 80" fill="none" aria-hidden="true"><circle class="ring" cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 4.5" stroke-linecap="round"/><circle cx="40" cy="40" r="29.5" stroke="currentColor" stroke-width="1.2"/><text x="40.5" y="52.5" text-anchor="middle" fill="currentColor" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="500" font-size="38">J</text></svg><div class="mk">Jhessica</div><span class="lscript">confeitaria artesanal</span><div class="lbar"><i id="dBar"></i></div><div class="lsub" id="dSub">no forno · 0%</div></div></div>
+        <div class="demo-body"><span class="label-s">Loader</span><h3 class="h4">No forno</h3><p class="body-m">Barra com brilho que corre, anel pontilhado girando e percentual das imagens.</p><div class="demo-row"><code>1.1s</code><button class="btn btn-outline btn-sm" type="button" data-replay="loader">Repetir</button></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><p class="h3" id="dSplit" data-split>Recheio <em>cremoso</em></p></div>
+        <div class="demo-body"><span class="label-s">[data-split]</span><h3 class="h4">Letras em 3D</h3><p class="body-m">Cada letra sobe de trás, girando e perdendo o desfoque.</p><div class="demo-row"><code>1.4s · 32ms</code><button class="btn btn-outline btn-sm" type="button" data-replay="split" data-target="#dSplit">Repetir</button></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><div id="dRv" style="display:grid;gap:.7rem;justify-items:center;text-align:center"><span class="eyebrow">01 · Origem</span><p class="h4">Surgindo com calma</p><span class="ornament"><i></i><svg class="i"><use href="#i-sparkle"/></svg><i></i></span></div></div>
+        <div class="demo-body"><span class="label-s">[data-rv="stagger"]</span><h3 class="h4">Surgir</h3><p class="body-m">Sobe 48px e aparece, um filho de cada vez.</p><div class="demo-row"><code>1.2s · .09s</code><button class="btn btn-outline btn-sm" type="button" data-replay="reveal" data-target="#dRv">Repetir</button></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><p class="h3">Feito <span class="scribble" id="dScr">à mão<svg class="scribble-line" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M3 9.5C45 4 120 1.8 197 6.5"/><path vector-effect="non-scaling-stroke" d="M30 12.5c45-3.2 100-3.4 150-.8"/></svg></span></p></div>
+        <div class="demo-body"><span class="label-s">.scribble</span><h3 class="h4">Rabisco</h3><p class="body-m">Um traço de caneta que se desenha da esquerda para a direita.</p><div class="demo-row"><code>1s · ease-draw</code><button class="btn btn-outline btn-sm" type="button" data-replay="scribble" data-target="#dScr">Repetir</button></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage band"><div class="glow band-glow-a" style="width:200px;height:200px;right:-40px;top:-60px"></div><div style="position:relative;text-align:center"><div class="stat" id="dCount" data-count="1200" data-pre="+" style="color:var(--on-band)">+1.200</div><div class="label-s" style="margin-top:.6rem">bolos entregues</div></div></div>
+        <div class="demo-body"><span class="label-s">[data-count]</span><h3 class="h4">Contador</h3><p class="body-m">Conta até o valor uma única vez, com separador de milhar.</p><div class="demo-row"><code>1.8s</code><button class="btn btn-outline btn-sm" type="button" data-replay="count" data-target="#dCount">Repetir</button></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><div class="tilt-demo" data-tilt="14"><img src="assets/images/produto-brigadeiros.webp" alt="" loading="lazy"></div></div>
+        <div class="demo-body"><span class="label-s">[data-tilt]</span><h3 class="h4">Inclinação 3D</h3><p class="body-m">Passe o mouse: o quadro inclina, o reflexo acompanha e a foto desliza por dentro.</p><div class="demo-row"><code>.9s · 14°</code><span class="label-s">Hover</span></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><div class="clip-box" id="dClip"><img src="assets/images/processo-assar.webp" alt="" loading="lazy"></div></div>
+        <div class="demo-body"><span class="label-s">clip-path</span><h3 class="h4">Cortina</h3><p class="body-m">A foto se revela de cima para baixo enquanto o zoom assenta.</p><div class="demo-row"><code>1.4s · expo</code><button class="btn btn-outline btn-sm" type="button" data-replay="clip" data-target="#dClip">Repetir</button></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;justify-content:center"><span class="btn btn-primary btn-sm" tabindex="0">Brilho</span><button class="fav" type="button" aria-pressed="false" aria-label="Favoritar" style="position:static"><svg class="i"><use href="#i-heart"/></svg></button><span class="icon-btn"><svg class="i"><use href="#i-gift"/></svg></span></div></div>
+        <div class="demo-body"><span class="label-s">Microinterações</span><h3 class="h4">Brilho, pulo, flutuar</h3><p class="body-m">Hover no botão para o brilho atravessar; clique no coração para o pulo.</p><div class="demo-row"><code>.9s · .5s · .45s</code><span class="label-s">Hover · clique</span></div></div></div>
+
+      <div class="demo" data-rv><div class="demo-stage"><div class="glow" style="width:180px;height:180px;background:var(--glow-a);left:10%;top:10%"></div><div class="glow" style="width:160px;height:160px;background:var(--glow-b);right:8%;bottom:6%;animation-delay:-6s"></div><div style="position:relative;display:grid;justify-items:center;gap:.9rem"><span class="lettering foil">doce</span><span class="ornament"><i></i><svg class="i"><use href="#i-sparkle"/></svg><i></i></span></div></div>
+        <div class="demo-body"><span class="label-s">Ambiente · infinito</span><h3 class="h4">Brilho, folha de ouro</h3><p class="body-m">Brilhos à deriva, degradê de ouro que respira e o brilhinho que pisca.</p><div class="demo-row"><code>18s · 7s · 3.6s</code><span class="label-s">∞</span></div></div></div>
+    </div>
+
+    <div class="pointer"><svg class="i"><use href="#i-arrow"/></svg><span class="eyebrow">Trilho horizontal fixado (.process): role por ele</span></div>
+  </div>
+</section>
+
+<section class="process" id="processo" aria-label="Processo">
+  <div class="glow band-glow-a" style="width:560px;height:560px;right:-160px;top:-220px"></div>
+  <div class="container process-head">
+    <div><span class="eyebrow">O processo</span><h2 class="h2 fast" data-split>Do forno <em>à sua mesa.</em></h2></div>
+    <span class="label-s" style="color:var(--on-band-2)">4 passos · role para seguir</span>
+  </div>
+  <div class="track-wrap" id="trackWrap">
+    <div class="track" id="track">
+      <div class="step intro"><p class="big">Um bolo não se faz com pressa. <em>Esse é o segredo.</em></p><span class="lettering foil">com calma</span></div>
+      <figure class="step"><img src="assets/images/processo-peneirar.webp" alt="Farinha sendo peneirada numa tigela de cerâmica" loading="lazy"><figcaption class="lab"><span class="s"><b>01</b>peneirar</span><h3>Peneirar a farinha</h3><p>Duas vezes, para a massa ficar leve e sem nenhum grumo.</p></figcaption></figure>
+      <figure class="step"><img src="assets/images/processo-bater.webp" alt="Batedor de arame levantando massa cremosa de bolo" loading="lazy"><figcaption class="lab"><span class="s"><b>02</b>bater</span><h3>Bater até a fita</h3><p>Ovos e açúcar ganham volume até a massa escorrer em fita.</p></figcaption></figure>
+      <figure class="step"><img src="assets/images/processo-assar.webp" alt="Formas de bolo recém-saídas do forno sobre uma grade" loading="lazy"><figcaption class="lab"><span class="s"><b>03</b>assar</span><h3>Forno baixo, paciência alta</h3><p>160 °C e porta fechada. O cheiro avisa quando está pronto.</p></figcaption></figure>
+      <figure class="step"><img src="assets/images/processo-confeitar.webp" alt="Mãos confeitando um bolo com buttercream" loading="lazy"><figcaption class="lab"><span class="s"><b>04</b>confeitar</span><h3>Confeitar à mão</h3><p>Buttercream espatulado, frutas frescas e o toque final no dia.</p></figcaption></figure>
+    </div>
+  </div>
+  <div class="process-bar" aria-hidden="true"><i id="processBar"></i></div>
+</section>
+
+<!-- ═════════════════ 6 · ÍCONES ═════════════════ -->
+<section class="sec alt" id="icones">
+  <span class="watermark" data-speed="-.6" aria-hidden="true">detalhes</span>
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow-line" data-rv><span class="ln"></span><span class="eyebrow">06 · Ícones</span></div>
+        <h2 class="h2 fast" data-split>Traço fino, <em>detalhe doce.</em></h2>
+      </div>
+      <p class="sec-intro" data-rv>Um sprite SVG embutido na página: 24×24, traço de 1,5 com pontas arredondadas, na família do Lucide e do Solar dos modelos. Nenhuma requisição extra, e a cor vem de <code>currentColor</code>. Estrela e brilho são preenchidos.</p>
+    </div>
+
+    <div class="icons" data-rv>
+      <div class="ic"><svg class="i"><use href="#i-cake"/></svg><code>i-cake</code></div>
+      <div class="ic"><svg class="i"><use href="#i-slice"/></svg><code>i-slice</code></div>
+      <div class="ic"><svg class="i"><use href="#i-cupcake"/></svg><code>i-cupcake</code></div>
+      <div class="ic"><svg class="i"><use href="#i-cookie"/></svg><code>i-cookie</code></div>
+      <div class="ic"><svg class="i"><use href="#i-whisk"/></svg><code>i-whisk</code></div>
+      <div class="ic"><svg class="i"><use href="#i-chef"/></svg><code>i-chef</code></div>
+      <div class="ic"><svg class="i"><use href="#i-egg"/></svg><code>i-egg</code></div>
+      <div class="ic"><svg class="i"><use href="#i-wheat"/></svg><code>i-wheat</code></div>
+      <div class="ic"><svg class="i"><use href="#i-leaf"/></svg><code>i-leaf</code></div>
+      <div class="ic"><svg class="i"><use href="#i-heart"/></svg><code>i-heart</code></div>
+      <div class="ic"><svg class="i"><use href="#i-star"/></svg><code>i-star</code></div>
+      <div class="ic"><svg class="i"><use href="#i-sparkle"/></svg><code>i-sparkle</code></div>
+      <div class="ic"><svg class="i"><use href="#i-gift"/></svg><code>i-gift</code></div>
+      <div class="ic"><svg class="i"><use href="#i-truck"/></svg><code>i-truck</code></div>
+      <div class="ic"><svg class="i"><use href="#i-clock"/></svg><code>i-clock</code></div>
+      <div class="ic"><svg class="i"><use href="#i-calendar"/></svg><code>i-calendar</code></div>
+      <div class="ic"><svg class="i"><use href="#i-pin"/></svg><code>i-pin</code></div>
+      <div class="ic"><svg class="i"><use href="#i-bag"/></svg><code>i-bag</code></div>
+      <div class="ic"><svg class="i"><use href="#i-insta"/></svg><code>i-insta</code></div>
+      <div class="ic"><svg class="i"><use href="#i-msg"/></svg><code>i-msg</code></div>
+      <div class="ic"><svg class="i"><use href="#i-phone"/></svg><code>i-phone</code></div>
+      <div class="ic"><svg class="i"><use href="#i-arrow"/></svg><code>i-arrow</code></div>
+      <div class="ic"><svg class="i"><use href="#i-check"/></svg><code>i-check</code></div>
+      <div class="ic"><svg class="i"><use href="#i-plus"/></svg><code>i-plus</code></div>
+      <div class="ic"><svg class="i"><use href="#i-alert"/></svg><code>i-alert</code></div>
+      <div class="ic"><svg class="i"><use href="#i-sun"/></svg><code>i-sun</code></div>
+      <div class="ic"><svg class="i"><use href="#i-moon"/></svg><code>i-moon</code></div>
+      <div class="ic"><svg class="i"><use href="#i-menu"/></svg><code>i-menu</code></div>
+      <div class="ic"><svg class="i"><use href="#i-x"/></svg><code>i-x</code></div>
+    </div>
+    <code class="ds-code">&lt;svg class="i"&gt;&lt;use href="#i-cake"/&gt;&lt;/svg&gt; · .i = 1.2em, fill none, stroke currentColor 1.5, round caps</code>
+
+    <div class="ds-sub"><span class="eyebrow">6.1 · Tamanhos</span></div>
+    <div class="ds-panel ic-row" data-rv>
+      <figure><svg class="i" style="width:14px;height:14px"><use href="#i-cupcake"/></svg><figcaption>14 · tag</figcaption></figure>
+      <figure><svg class="i" style="width:16px;height:16px"><use href="#i-cupcake"/></svg><figcaption>16 · botão</figcaption></figure>
+      <figure><svg class="i" style="width:21px;height:21px"><use href="#i-cupcake"/></svg><figcaption>21 · poço</figcaption></figure>
+      <figure><svg class="i" style="width:26px;height:26px"><use href="#i-cupcake"/></svg><figcaption>26 · grade</figcaption></figure>
+      <figure><svg class="i" style="width:40px;height:40px"><use href="#i-cupcake"/></svg><figcaption>40 · destaque</figcaption></figure>
+      <figure><svg class="i" style="width:64px;height:64px;stroke-width:1"><use href="#i-cupcake"/></svg><figcaption>64 · traço 1</figcaption></figure>
+    </div>
+
+    <div class="ds-sub"><span class="eyebrow">6.2 · Herança de cor &amp; recipientes</span></div>
+    <div class="ds-panel ic-row" data-rv>
+      <figure style="color:var(--ink)"><svg class="i" style="width:26px;height:26px"><use href="#i-heart"/></svg><figcaption>--ink</figcaption></figure>
+      <figure style="color:var(--accent)"><svg class="i" style="width:26px;height:26px"><use href="#i-heart"/></svg><figcaption>--accent</figcaption></figure>
+      <figure style="color:var(--rose)"><svg class="i" style="width:26px;height:26px"><use href="#i-heart"/></svg><figcaption>--rose</figcaption></figure>
+      <figure style="color:var(--muted)"><svg class="i" style="width:26px;height:26px"><use href="#i-heart"/></svg><figcaption>--muted</figcaption></figure>
+      <figure><span class="well"><svg class="i"><use href="#i-truck"/></svg></span><figcaption>.well</figcaption></figure>
+      <figure><span class="icon-btn"><svg class="i"><use href="#i-pin"/></svg></span><figcaption>.icon-btn</figcaption></figure>
+      <figure><span class="icon-btn glass"><svg class="i"><use href="#i-bag"/></svg></span><figcaption>.icon-btn.glass</figcaption></figure>
+      <figure><span class="fav" style="position:static"><svg class="i"><use href="#i-heart"/></svg></span><figcaption>.fav</figcaption></figure>
+      <figure><span class="tag tag-caramel"><svg class="i"><use href="#i-star"/></svg>Tag</span><figcaption>.tag .i 11px</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- fim -->
+<section class="sec cta-sec">
+  <div class="container">
+    <span class="eyebrow" data-rv>Fim da receita</span>
+    <h2 class="h2" data-rv>Agora é só levar <em>ao <span class="scribble">forno.<svg class="scribble-line" viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M3 9.5C45 4 120 1.8 197 6.5"/><path vector-effect="non-scaling-stroke" d="M30 12.5c45-3.2 100-3.4 150-.8"/></svg></span></em></h2>
+    <p class="lead" data-rv>Cada classe desta página está pronta para virar o site da Jhessica. Monte as páginas com estas peças e todas vão sair com o mesmo sabor.</p>
+    <form class="signup" data-rv onsubmit="return false"><input type="email" placeholder="seu@email.com" aria-label="E-mail"><button class="btn btn-primary btn-sm" type="submit">Receber novidades</button></form>
+    <p class="body-s" data-rv>Fotografia editorial gerada para o projeto · ícones em traço 1,5 · Design System 1 · 2026</p>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="glow band-glow-a" style="width:480px;height:480px;left:-160px;bottom:-260px"></div>
+  <div class="container">
+    <div class="frow">
+      <div class="fbrand">
+        <a class="brand" href="#top"><svg class="mono" viewBox="0 0 80 80" fill="none" aria-hidden="true"><circle class="ring" cx="40" cy="40" r="37" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 4.5" stroke-linecap="round"/><circle cx="40" cy="40" r="29.5" stroke="currentColor" stroke-width="1.2"/><text x="40.5" y="52.5" text-anchor="middle" fill="currentColor" font-family="Cormorant Garamond, Georgia, serif" font-style="italic" font-weight="500" font-size="38">J</text></svg><span class="wm"><b>Jhessica</b><span>Confeitaria artesanal</span></span></a>
+        <p class="lettering">com carinho, desde a primeira fornada</p>
+        <div class="fsocial"><a class="icon-btn" href="#top" aria-label="Instagram"><svg class="i"><use href="#i-insta"/></svg></a><a class="icon-btn" href="#top" aria-label="WhatsApp"><svg class="i"><use href="#i-msg"/></svg></a><a class="icon-btn" href="#top" aria-label="Endereço do ateliê"><svg class="i"><use href="#i-pin"/></svg></a></div>
+      </div>
+      <div class="fcols">
+        <div class="fcol"><h4>Fundamentos</h4><a href="#tipografia">Tipografia</a><a href="#cores">Cores &amp; superfícies</a><a href="#icones">Ícones</a></div>
+        <div class="fcol"><h4>Padrões</h4><a href="#componentes">Componentes</a><a href="#layout">Layout</a><a href="#movimento">Movimento</a></div>
+        <div class="fcol"><h4>Ateliê</h4><a href="#top">Encomendas</a><a href="#top">WhatsApp</a><a href="#top">Voltar ao topo</a></div>
+      </div>
+    </div>
+    <div class="fbot"><span>© 2026 Jhessica Confeitaria Artesanal · Design System 1</span><span>Feito à mão, pixel por pixel.</span></div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  const root = document.documentElement;
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const GS = !!(window.gsap && window.ScrollTrigger);
+
+  /* ── letras 3D: quebra em palavra › máscara › letra (Clarix) ── */
+  function split(el) {
+    el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+    let i = 0;
+    const walk = (node, parent) => {
+      if (node.nodeType === 3) {
+        let word = null;
+        for (const ch of node.textContent) {
+          if (/\s/.test(ch)) { word = null; parent.appendChild(document.createTextNode(' ')); continue; }
+          if (!word) { word = document.createElement('span'); word.className = 'w'; parent.appendChild(word); }
+          const m = document.createElement('span'), c = document.createElement('span');
+          m.className = 'cm'; c.className = 'ch'; c.textContent = ch; c.style.setProperty('--i', i++);
+          m.appendChild(c); word.appendChild(m);
+        }
+      } else if (node.nodeType === 1) {
+        if (node.nodeName.toLowerCase() === 'svg') { parent.appendChild(node.cloneNode(true)); return; }
+        const cl = node.cloneNode(false);
+        [...node.childNodes].forEach(k => walk(k, cl));
+        parent.appendChild(cl);
+      }
+    };
+    const inner = document.createElement('span');
+    inner.setAttribute('aria-hidden', 'true');
+    [...el.childNodes].forEach(k => walk(k, inner));
+    el.textContent = ''; el.appendChild(inner);
+    el.classList.add('letters');
+  }
+  $$('[data-split]').forEach(split);
+  const replayClass = (el, cls) => { el.classList.add('snap'); el.classList.remove(cls); void el.offsetWidth; el.classList.remove('snap'); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add(cls))); };
+
+  /* ── tema: círculo que abre a partir do botão ── */
+  const themeBtn = $('#themeBtn');
+  function paintThemeBtn() { const d = root.dataset.theme === 'dark'; themeBtn.setAttribute('aria-pressed', d); themeBtn.setAttribute('aria-label', d ? 'Ativar modo claro' : 'Ativar modo escuro'); }
+  function setTheme(t) { root.dataset.theme = t; try { localStorage.setItem('jh-theme', t); } catch (e) {} paintThemeBtn(); dispatchEvent(new Event('themechange')); }
+  paintThemeBtn();
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    if (!document.startViewTransition || REDUCED) {
+      root.classList.add('theme-fade'); setTheme(next); setTimeout(() => root.classList.remove('theme-fade'), 700); return;
+    }
+    const r = themeBtn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    document.startViewTransition(() => setTheme(next)).ready.then(() => {
+      root.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${R}px at ${x}px ${y}px)`] },
+        { duration: 800, easing: 'cubic-bezier(.7,0,.2,1)', pseudoElement: '::view-transition-new(root)' });
+    });
+  });
+
+  /* ── nav: vidro ao rolar, some descendo, volta subindo, scrollspy ── */
+  const nav = $('#nav'); let lastY = scrollY;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    nav.classList.toggle('docked', y > 60);
+    nav.classList.toggle('hide', y > lastY && y > 500 && !document.body.classList.contains('menu-open'));
+    lastY = y;
+  }, { passive: true });
+  const links = $$('.nlinks a');
+  const spy = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) links.forEach(a => a.classList.toggle('is-current', a.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-40% 0px -55% 0px' });
+  links.forEach(a => { const s = $(a.getAttribute('href')); if (s) spy.observe(s); });
+
+  /* ── gaveta mobile ── */
+  const drawer = $('#drawer'), menuBtn = $('#menuBtn');
+  drawer.inert = true;
+  function openDrawer() { document.body.classList.add('menu-open'); drawer.inert = false; menuBtn.setAttribute('aria-expanded', 'true'); if (window.lenis) lenis.stop(); $('#drawerClose').focus(); }
+  function closeDrawer() { if (!document.body.classList.contains('menu-open')) return; document.body.classList.remove('menu-open'); drawer.inert = true; menuBtn.setAttribute('aria-expanded', 'false'); if (window.lenis) lenis.start(); }
+  menuBtn.addEventListener('click', () => document.body.classList.contains('menu-open') ? closeDrawer() : openDrawer());
+  $('#drawerScrim').addEventListener('click', closeDrawer);
+  $('#drawerClose').addEventListener('click', closeDrawer);
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+  /* ── açúcar de confeiteiro caindo no hero (versão doce do vapor do Asagiri) ── */
+  (function () {
+    const cv = $('#sugar'); if (!cv || REDUCED) return;
+    const x = cv.getContext('2d'), DPR = Math.min(2, devicePixelRatio || 1);
+    let W = 2, H = 2, parts = [], running = true, last = 0, rgb = '184,122,61';
+    const readRGB = () => { rgb = getComputedStyle(root).getPropertyValue('--sugar').trim() || rgb; };
+    const mk = init => ({ x: W * (.22 + .78 * Math.sqrt(Math.random())), y: init ? Math.random() * H : -8 * DPR, r: (.5 + Math.random() * 1.7) * DPR,
+      v: (.15 + Math.random() * .38) * DPR, sw: Math.random() * 6.28, sa: (.15 + Math.random() * .4) * DPR, a: .25 + Math.random() * .55, tw: Math.random() * 6.28 });
+    function size() { const r = cv.getBoundingClientRect(); W = cv.width = Math.max(2, r.width * DPR); H = cv.height = Math.max(2, r.height * DPR); parts = []; const n = Math.min(90, Math.round(r.width / 16)); for (let i = 0; i < n; i++) parts.push(mk(true)); }
+    function frame(t) {
+      requestAnimationFrame(frame);
+      if (!running || t - last < 33) return; last = t;
+      x.clearRect(0, 0, W, H); x.fillStyle = 'rgb(' + rgb + ')';
+      for (const p of parts) {
+        p.y += p.v; p.x += Math.sin(t * .0006 + p.sw) * p.sa * .3; p.tw += .05;
+        if (p.y > H + 10) { Object.assign(p, mk(false)); continue; }
+        x.globalAlpha = p.a * (.55 + .45 * Math.sin(p.tw));
+        x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill();
+      }
+      x.globalAlpha = 1;
+    }
+    readRGB(); size();
+    addEventListener('resize', size);
+    addEventListener('themechange', readRGB);
+    new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(cv);
+    requestAnimationFrame(frame);
+  })();
+
+  /* ── inclinação 3D + reflexo + profundidade interna ── */
+  if (FINE && !REDUCED) $$('[data-tilt]').forEach(el => {
+    const max = +el.dataset.tilt || 8; let raf = 0;
+    el.insertAdjacentHTML('beforeend', '<span class="glare" aria-hidden="true"></span>');
+    el.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        el.classList.add('is-tilting');
+        el.style.setProperty('--ry', ((px - .5) * max * 2).toFixed(2) + 'deg');
+        el.style.setProperty('--rx', ((.5 - py) * max * 2).toFixed(2) + 'deg');
+        el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        el.style.setProperty('--px', ((.5 - px) * 16).toFixed(1) + 'px');
+        el.style.setProperty('--py', ((.5 - py) * 16).toFixed(1) + 'px');
+      });
+    });
+    el.addEventListener('pointerleave', () => { cancelAnimationFrame(raf); el.classList.remove('is-tilting'); ['--rx', '--ry', '--px', '--py'].forEach(p => el.style.removeProperty(p)); });
+  });
+
+  /* ── depoimentos, abas, favoritos ── */
+  const slides = $$('[data-quote]'), dots = $$('[data-dot]'); let qi = 0, qt = 0;
+  function showQuote(n) {
+    slides[qi].classList.remove('on'); dots[qi].setAttribute('aria-current', 'false');
+    qi = (n + slides.length) % slides.length;
+    slides[qi].classList.add('on'); dots[qi].setAttribute('aria-current', 'true');
+  }
+  const autoQuote = () => { clearInterval(qt); if (!REDUCED) qt = setInterval(() => showQuote(qi + 1), 5500); };
+  dots.forEach((d, n) => d.addEventListener('click', () => { showQuote(n); autoQuote(); }));
+  autoQuote();
+
+  $$('[data-tabs]').forEach(group => {
+    const tabs = $$('[role="tab"]', group), scope = group.closest('[data-tabscope]');
+    const select = t => {
+      tabs.forEach(o => { const on = o === t; o.setAttribute('aria-selected', on); o.tabIndex = on ? 0 : -1; $('#' + o.getAttribute('aria-controls')).hidden = !on; });
+      $$('[data-feat]', scope).forEach(f => f.classList.toggle('on', f.dataset.feat === t.getAttribute('aria-controls')));
+    };
+    tabs.forEach((t, n) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', e => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return;
+        const nx = tabs[(n + d + tabs.length) % tabs.length]; nx.focus(); select(nx);
+      });
+    });
+  });
+
+  $$('button.fav').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
+
+  /* ── medidas tipográficas lidas ao vivo ── */
+  function measure() {
+    $$('.ds-row').forEach(r => {
+      const t = $('[data-m]', r), o = $('.ds-size', r); if (!t || !o) return;
+      const cs = getComputedStyle(t), fs = Math.round(parseFloat(cs.fontSize) * 10) / 10;
+      const lh = cs.lineHeight === 'normal' ? 'normal' : Math.round(parseFloat(cs.lineHeight) * 10) / 10 + 'px';
+      o.innerHTML = fs + 'px / ' + lh + '<br><span>peso ' + cs.fontWeight + '</span>';
+    });
+  }
+  measure();
+  if (document.fonts) document.fonts.ready.then(measure);
+  let mt = 0; addEventListener('resize', () => { clearTimeout(mt); mt = setTimeout(measure, 150); });
+
+  /* ── contadores ── */
+  function setCount(el, v) {
+    const pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+    el.innerHTML = (pre ? '<em>' + pre + '</em>' : '') + Math.round(v).toLocaleString('pt-BR') + (suf ? '<em>' + suf + '</em>' : '');
+  }
+  function countUp(el) { const o = { v: 0 }, to = +el.dataset.count; gsap.to(o, { v: to, duration: 1.8, ease: 'power2.out', onUpdate: () => setCount(el, o.v) }); }
+  $$('[data-count]').forEach(el => setCount(el, +el.dataset.count));
+
+  /* ── loader: barra suavizada até o % das imagens do hero ── */
+  const loader = $('#loader'), lbar = $('#lbar'), lsub = $('#lsub');
+  const pre = $$('img[data-preload]'); let loaded = 0, target = 8, shown = 0, finished = false;
+  const bump = () => { loaded++; target = Math.max(target, Math.round(loaded / pre.length * 100)); };
+  pre.forEach(im => { if (im.complete) bump(); else { im.addEventListener('load', bump, { once: true }); im.addEventListener('error', bump, { once: true }); } });
+  if (!pre.length) target = 100;
+  setTimeout(() => { target = 100; }, 6000);
+  (function tick() {
+    shown += (target - shown) * .09; if (target - shown < .5) shown = target;
+    lbar.style.width = shown + '%'; lsub.textContent = 'no forno · ' + Math.round(shown) + '%';
+    if (shown < 100) requestAnimationFrame(tick);
+    else if (!finished) { finished = true; setTimeout(() => { loader.classList.add('done'); loader.setAttribute('aria-hidden', 'true'); start(); }, 280); }
+  })();
+
+  /* ── entrada do hero ── */
+  function heroIn() {
+    const title = $('.hero-title'), scr = $('.hero .scribble');
+    if (!GS || REDUCED) { title.classList.add('is-in'); scr.classList.add('is-drawn'); return; }
+    title.classList.remove('is-in'); scr.classList.remove('is-drawn');
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.from('.hero .eyebrow-line', { y: 20, opacity: 0, duration: .9 })
+      .add(() => title.classList.add('is-in'), '-=.55')
+      .from('.hero-lettering', { opacity: 0, scale: .8, rotation: -16, duration: 1.5, ease: 'expo.out' }, '+=.6')
+      .add(() => scr.classList.add('is-drawn'), '-=1.2')
+      .from('.hero .ornament', { scaleX: 0, opacity: 0, duration: 1 }, '-=1.1')
+      .from('.hero .lead', { y: 24, opacity: 0, duration: .9 }, '-=.8')
+      .from('.hero .cta > *', { y: 18, opacity: 0, duration: .8, stagger: .1 }, '-=.6')
+      .from('.hero .feat', { y: 16, opacity: 0, duration: .7, stagger: .08 }, '-=.5')
+      .from('.aside-item', { opacity: 0, x: 70, rotationY: -24, transformPerspective: 1000, duration: 1.5, stagger: .14, ease: 'expo.out' }, .5)
+      .from('.hero-foot, .hero .vtext', { opacity: 0, duration: 1 }, '-=.6');
+  }
+
+  /* ── tudo que depende do GSAP ── */
+  function start() {
+    heroIn();
+    if (!GS) { $$('[data-split]').forEach(e => e.classList.add('is-in')); $$('.scribble').forEach(s => s.classList.add('is-drawn')); return; }
+    gsap.registerPlugin(ScrollTrigger);
+    const lenis = (!REDUCED && window.Lenis) ? new Lenis({ lerp: .085, smoothWheel: true }) : null;
+    window.lenis = lenis;
+    if (lenis) { lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+    $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const id = a.getAttribute('href'); if (id.length < 2) return; const t = $(id); if (!t) return;
+      e.preventDefault(); closeDrawer();
+      if (lenis) lenis.scrollTo(t, { offset: -10, duration: 1.4 }); else t.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
+    }));
+
+    $$('[data-split]').forEach(el => { if (el.closest('.hero')) return; ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => el.classList.add('is-in') }); });
+    $$('.scribble').forEach(s => { if (s.closest('.hero') || s.id) return; ScrollTrigger.create({ trigger: s, start: 'top 88%', once: true, onEnter: () => s.classList.add('is-drawn') }); });
+    $$('#dSplit, #dScr').forEach(el => ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => el.classList.add(el.id === 'dScr' ? 'is-drawn' : 'is-in') }));
+
+    if (REDUCED) {
+      $$('[data-rv]').forEach(el => gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: .6, scrollTrigger: { trigger: el, start: 'top 94%' } }));
+      return;
+    }
+
+    /* surgir */
+    $$('[data-rv]').forEach(el => {
+      const mode = el.dataset.rv, targets = mode === 'stagger' ? el.children : el;
+      const from = mode === '3d' ? { opacity: 0, y: 70, rotationX: 14, transformPerspective: 1100, transformOrigin: '50% 0%' } : { opacity: 0, y: 48 };
+      gsap.fromTo(targets, from, { opacity: 1, y: 0, rotationX: 0, duration: 1.2, ease: 'power3.out', stagger: mode === 'stagger' ? .09 : 0, clearProps: 'transform',
+        scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+
+    /* parallax do hero e do chão */
+    gsap.to('.hero-media', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('.hero-copy', { y: -70, opacity: .25, ease: 'none', scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('.hero-aside', { y: -140, ease: 'none', scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('.page-bg .b1', { yPercent: -60, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true } });
+    gsap.to('.page-bg .b2', { yPercent: -90, xPercent: -30, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: true } });
+    $$('[data-speed]').forEach(el => {
+      const s = +el.dataset.speed;
+      gsap.fromTo(el, { y: -s * 120 }, { y: s * 120, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+    $$('[data-par]').forEach(img => gsap.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
+
+    /* cortina */
+    $$('[data-curtain]').forEach(el => {
+      const r = +el.dataset.curtain || 0, img = $('img', el);
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 30%', scrub: true } });
+      tl.fromTo(el, { clipPath: 'inset(10% 8% 10% 8% round 40px)' }, { clipPath: `inset(0% 0% 0% 0% round ${r}px)`, ease: 'none' }, 0);
+      if (img) tl.fromTo(img, { scale: 1.22 }, { scale: 1, ease: 'none' }, 0);
+    });
+
+    /* contadores */
+    $$('[data-count]').forEach(el => {
+      if (el.id) return; setCount(el, 0);
+      ScrollTrigger.create({ trigger: el, start: 'top 88%', once: true, onEnter: () => countUp(el) });
+    });
+
+    /* trilho horizontal fixado */
+    const track = $('#track'), wrap = $('#trackWrap'), bar = $('#processBar');
+    const dist = () => Math.max(1, track.scrollWidth - wrap.clientWidth);
+    const tween = gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '#processo', start: 'top top', end: () => '+=' + dist() * 1.1,
+      scrub: true, pin: true, anticipatePin: 1, invalidateOnRefresh: true, onUpdate: s => { bar.style.transform = 'scaleX(' + s.progress + ')'; } } });
+    $$('.step img', track).forEach(img => gsap.fromTo(img, { xPercent: -8 }, { xPercent: 8, ease: 'none',
+      scrollTrigger: { trigger: img.parentElement, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } }));
+
+    /* faixa rolante acelera com a rolagem */
+    const mq = $$('.mq-track').map(t => t.getAnimations()[0]).filter(Boolean);
+    if (lenis && mq.length) lenis.on('scroll', ({ velocity }) => { const r = 1 + Math.min(5, Math.abs(velocity) * .15); mq.forEach(a => { a.playbackRate = r; }); });
+
+    /* profundidade no hero seguindo o cursor */
+    if (FINE) {
+      const layers = $$('[data-depth]').map(el => ({ d: +el.dataset.depth, x: gsap.quickTo(el, 'x', { duration: 1.2, ease: 'power3' }), y: gsap.quickTo(el, 'y', { duration: 1.2, ease: 'power3' }) }));
+      $('#top').addEventListener('pointermove', e => {
+        const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5;
+        layers.forEach(l => { l.x(nx * l.d * -36); l.y(ny * l.d * -26); });
+      });
+    }
+
+    if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
+    setTimeout(() => ScrollTrigger.refresh(), 500);
+  }
+
+  /* ── galeria de movimento: repetir ── */
+  let demoLoader = 0;
+  const demos = {
+    loader() {
+      const b = $('#dBar'), s = $('#dSub'); let p = 0; clearInterval(demoLoader);
+      demoLoader = setInterval(() => { p = Math.min(100, p + 3); b.style.width = p + '%'; s.textContent = 'no forno · ' + p + '%'; if (p >= 100) clearInterval(demoLoader); }, 45);
+    },
+    split: t => replayClass(t, 'is-in'),
+    scribble: t => replayClass(t, 'is-drawn'),
+    reveal: t => { if (GS && !REDUCED) gsap.fromTo(t.children, { opacity: 0, y: 48 }, { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', stagger: .09 }); },
+    count: t => { if (GS) countUp(t); },
+    clip: t => {
+      if (!GS || REDUCED) return;
+      gsap.fromTo(t, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut' });
+      gsap.fromTo($('img', t), { scale: 1.3 }, { scale: 1, duration: 1.8, ease: 'expo.out' });
+    }
+  };
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => demos[b.dataset.replay](b.dataset.target ? $(b.dataset.target) : null)));
+  demos.loader();
+});
+</script>
+</body>
+</html>

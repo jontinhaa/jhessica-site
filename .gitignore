@@ -4,3 +4,6 @@ templates/
 
 # master do vídeo da hero (66 MB): fica fora do build e do git
 assets/videos/*.mp4
+
+# screenshots de revisão (ficam só na máquina)
+screenshots/

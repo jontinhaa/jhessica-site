@@ -1,3 +1,6 @@
 templates/
 # Added by code-review-graph
 .code-review-graph/
+
+# master do vídeo da hero (66 MB): fica fora do build e do git
+assets/videos/*.mp4

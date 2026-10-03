@@ -1,0 +1,45 @@
+# Verificações automáticas a cada push e pull request.
+# Gerado pelo escritório: ajuste working-directory para a pasta do app e tire os passos que não existem.
+name: Verificações
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jhess-site
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: jhess-site/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - name: Vulnerabilidades conhecidas nas dependências de produção (aviso, não bloqueia)
+        run: npm audit --omit=dev --audit-level=high
+        continue-on-error: true
+
+  segredos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Gitleaks procura chaves e tokens no histórico. É gratuito em repositório de conta pessoal;
+      # em repositório de organização ele pede a variável GITLEAKS_LICENSE.
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

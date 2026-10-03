@@ -1,0 +1,8 @@
+{
+  "tipo": "site",
+  "revisaoAutomatica": true,
+  "limiarLinhas": 60,
+  "limiarSensivel": 1,
+  "sensiveisExtras": ["jhess-site/src/lib/pedido/", "jhess-site/src/scripts/sacola"],
+  "ignorarExtras": []
+}

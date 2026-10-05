@@ -17,3 +17,8 @@ CLAUDE.local.md
 .env
 .env.*
 !.env.example
+
+# prints originais dos depoimentos (mostram foto e nome do contato): só a cópia recortada, em balao/, vai ao Git (npm run prints)
+jhess-site/src/assets/images/depoimentos/*
+!jhess-site/src/assets/images/depoimentos/.gitkeep
+!jhess-site/src/assets/images/depoimentos/balao/

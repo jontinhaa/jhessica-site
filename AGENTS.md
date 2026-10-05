@@ -45,6 +45,7 @@ O pente-fino roda estes comandos, nesta ordem, antes de entregar. Todos precisam
 - Dependência nova só com justificativa no pedido e aprovação do usuário.
 - Textos visíveis em português do Brasil, no tom definido acima.
 - Movimento só com CSS nativo (sticky e scroll-driven animations), sem GSAP/Lenis, e sempre respeitando `prefers-reduced-motion`.
+- Elemento com timeline `view()` não pode ter ancestral com `overflow: hidden` (o ancestral vira o contêiner da timeline e o progresso trava); usar `overflow: clip`.
 - Preço sempre recalculado de `cardapio.ts`; promessa ao cliente (sem glúten, sem leite…) só com dado confirmado.
 - Endereço completo de retirada nunca entra no repositório, só o bairro.
 - Nunca prometer que um produto é seguro para celíacos.

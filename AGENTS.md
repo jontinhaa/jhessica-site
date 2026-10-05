@@ -43,6 +43,7 @@ O pente-fino roda estes comandos, nesta ordem, antes de entregar. Todos precisam
 ## Convenções
 
 - Dependência nova só com justificativa no pedido e aprovação do usuário.
+- A regra "sem dependência nova" vale para o que roda no navegador. Ferramenta só de build (devDependencies) pode ser declarada com aprovação do Jhonatan, fixando a versão que já está em uso.
 - Textos visíveis em português do Brasil, no tom definido acima.
 - Movimento só com CSS nativo (sticky e scroll-driven animations), sem GSAP/Lenis, e sempre respeitando `prefers-reduced-motion`.
 - Elemento com timeline `view()` não pode ter ancestral com `overflow: hidden` (o ancestral vira o contêiner da timeline e o progresso trava); usar `overflow: clip`.

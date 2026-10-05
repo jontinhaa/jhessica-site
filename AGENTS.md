@@ -13,8 +13,8 @@ Regras deste projeto para qualquer agente (Claude Code, Codex, Antigravity). O `
 
 - Astro 7 (estático), TypeScript, CSS próprio com tokens (modo dia e noite), ícones Iconify
 - App em: `jhess-site/` (os comandos rodam lá)
-- Hospedagem: GitHub Pages de teste (https://jontinhaa.github.io/jhessica-site1/), deploy por `jhess-site/.github/workflows/deploy.yml`; produção.
-- Usaremos a vercel futuramente para publicar de fato e usar um domínio .com
+- Hospedagem: GitHub Pages de teste (https://jontinhaa.github.io/jhessica-site1/), deploy por `jhess-site/.github/workflows/deploy.yml`.
+- Produção: Cloudflare Pages com domínio próprio (passo a passo em `jhess-site/docs/LANCAMENTO.md`). A Vercel saiu porque o plano gratuito dela não permite uso comercial.
 
 ## Comandos
 

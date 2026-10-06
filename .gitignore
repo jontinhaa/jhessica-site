@@ -22,3 +22,7 @@ CLAUDE.local.md
 jhess-site/src/assets/images/depoimentos/*
 !jhess-site/src/assets/images/depoimentos/.gitkeep
 !jhess-site/src/assets/images/depoimentos/balao/
+
+
+brag-output*/
+brag-input/

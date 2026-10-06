@@ -50,6 +50,7 @@ O pente-fino roda estes comandos, nesta ordem, antes de entregar. Todos precisam
 - Preço sempre recalculado de `cardapio.ts`; promessa ao cliente (sem glúten, sem leite…) só com dado confirmado.
 - Endereço completo de retirada nunca entra no repositório, só o bairro.
 - Nunca prometer que um produto é seguro para celíacos.
+- brag-output/ e brag-input/ são produção de vídeo para o Instagram: ficam fora do site, podem usar GSAP/Hyperframes e não passam pelo pente-fino nem entram no build.
 
 ## Design system
 
